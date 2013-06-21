@@ -40,7 +40,7 @@ namespace TYPE_C_NowplayingEditor
             // http://social.msdn.microsoft.com/Forums/ja-JP/csharpgeneralja/thread/29b6239c-c672-4592-9b03-3784ad366b8c/
 
             ////ボタンコントロール配列の作成
-            //this.replaceButtons = new System.Windows.Forms.Button[34];
+            //this.replaceButtons = new System.Windows.Forms.Button[35];
 
             ////ボタンコントロールの配列にすでに作成されているインスタンスを代入
             //this.replaceButtons[0] = this.rButton1;
@@ -77,8 +77,9 @@ namespace TYPE_C_NowplayingEditor
             //this.replaceButtons[31] = this.rButton32;
             //this.replaceButtons[32] = this.rButton33;
             //this.replaceButtons[33] = this.rButton34;
+            //this.replaceButtons[34] = this.rButton35;
 
-       
+
             //または、次のようにもできる
             this.replaceButtons = new System.Windows.Forms.Button[]
                 {this.rButton1,  this.rButton2,  this.rButton3,  this.rButton4,  this.rButton5 ,
@@ -87,7 +88,7 @@ namespace TYPE_C_NowplayingEditor
                  this.rButton16, this.rButton17, this.rButton18, this.rButton19, this.rButton20 ,
                  this.rButton21, this.rButton22, this.rButton23, this.rButton24, this.rButton25 ,
                  this.rButton26, this.rButton27, this.rButton28, this.rButton29, this.rButton30 ,
-                 this.rButton31, this.rButton32, this.rButton33, this.rButton34
+                 this.rButton31, this.rButton32, this.rButton33, this.rButton34, this.rButton35
                 };
 
             //イベントハンドラに関連付け（必要な時のみ）
@@ -163,6 +164,7 @@ namespace TYPE_C_NowplayingEditor
             //MessageBox.Show(((System.Windows.Forms.Button)sender).Text);
 
             //  http://dobon.net/vb/dotnet/system/modifierkeys.html
+
             if ((Control.ModifierKeys & Keys.Control) == Keys.Control) {
 
             //【隠し機能】Ctrlキーを押しながら、ボタンをクリックする → デバッグモード
@@ -173,8 +175,8 @@ namespace TYPE_C_NowplayingEditor
                 string RightStr = "";
                 int myIDX = 0;
 
-                bool LeftSpaceFLG = false;
-                bool RightSpaceFLG = false;
+                //bool LeftSpaceFLG = false;
+                //bool RightSpaceFLG = false;
 
                 if ( tempStr.Contains(" ") == true ) {
                     myIDX = tempStr.IndexOf(" ", 0);
@@ -182,59 +184,19 @@ namespace TYPE_C_NowplayingEditor
                     LeftStr = tempStr.Substring(0, myIDX);
                     RightStr = tempStr.Substring(myIDX + 1, tempStr.Length - myIDX - 1);
 
-                    if ( this.EditBOX.Text.Length >= 1 && LastSelectionStart >= 1 ) {
-                        if ( this.EditBOX.Text.Substring(LastSelectionStart - 1, 1) == " " ) {
-                            LeftSpaceFLG = false;
-                        }else{
-                            LeftSpaceFLG = true;
-                        }
-                    }else{
-                        LeftSpaceFLG = false;
-                    }
-
-                    if ( this.EditBOX.Text.Length >= 1 ) {
-                        if ( this.EditBOX.Text.Length > LastSelectionStart + LastSelectionLength ) {
-                            if ( this.EditBOX.Text.Substring(LastSelectionStart + LastSelectionLength, 1) == " " ) {
-                                RightSpaceFLG = false;
-                            }else{
-                                RightSpaceFLG = true;
-                            }
-                        }
-                    }else{
-                        RightSpaceFLG = false;
-                    }
-
-                    if ( ListChangeFlg == true ) {
-                        if ( this.EditBOX.Text.Substring(this.EditBOX.Text.Length - 1, 1) == " " ) {
-                            LeftSpaceFLG = false;
-                        }else{
-                            LeftSpaceFLG = true;
-                        }
-                        RightSpaceFLG = false;
-                    }
-
                     tempStr = RightStr + "：" + LeftStr;
                     //左右を入れ替えて、区切り文字を：に変更した後、挿入する
 
-                    //左右に半角スペースを１つずつ
-                    if( LeftSpaceFLG == true ) { 
-                        tempStr = " " + tempStr;
-                    }
-
-                    if ( RightSpaceFLG == true ) {
-                        tempStr = tempStr + " ";
-                    }
-
-                    Console.Beep(); //【警告音】デバッグモード実行中
-                    //  http://dobon.net/vb/dotnet/vb2cs/vbbeep.html
-                }
-
-                if ( tempStr == "space" ) {
+                    tempStr = AddSpaceToLeftAndRight(tempStr);
+                }else if ( tempStr.Contains("#") == true && tempStr.Length > 1 ) {
+                    tempStr = AddSpaceToLeftAndRight(tempStr);
+                }else if ( tempStr == "#" ) {
+                    tempStr = "#";
+                }else if ( tempStr == "space" ) {
                     tempStr = " ";
                 }
 
                 InsertStrIntoComboBox(tempStr);
-
             }else{  //通常の置き換え文字挿入
 
                 string tempStr;
@@ -255,6 +217,83 @@ namespace TYPE_C_NowplayingEditor
 
                 InsertStrIntoComboBox(tempStr);
             }
+        }
+
+        private string AddSpaceToLeftAndRight(String TargetStr)
+        {
+
+            //【隠し機能】Ctrlキーを押しながら、ボタンをクリックする → デバッグモード
+            //string tempStr;
+            //tempStr = ((System.Windows.Forms.Button)sender).Text;
+
+            bool LeftSpaceFLG = false;
+            bool RightSpaceFLG = false;
+
+
+            if ( this.EditBOX.Text.Length >= 1 && LastSelectionStart >= 1 )
+            {
+                if ( this.EditBOX.Text.Substring(LastSelectionStart - 1, 1 ) == " " )
+                {
+                    LeftSpaceFLG = false;
+                }
+                else
+                {
+                    LeftSpaceFLG = true;
+                }
+            }
+            else
+            {
+                LeftSpaceFLG = false;
+            }
+
+            if ( this.EditBOX.Text.Length >= 1 )
+            {
+                if ( this.EditBOX.Text.Length > LastSelectionStart + LastSelectionLength )
+                {
+                    if ( this.EditBOX.Text.Substring( LastSelectionStart + LastSelectionLength, 1 ) == " " )
+                    {
+                        RightSpaceFLG = false;
+                    }
+                    else
+                    {
+                        RightSpaceFLG = true;
+                    }
+                }
+            }
+            else
+            {
+                RightSpaceFLG = false;
+            }
+
+            if ( ListChangeFlg == true )
+            {
+                if ( this.EditBOX.Text.Substring(this.EditBOX.Text.Length - 1, 1 ) == " " )
+                {
+                    LeftSpaceFLG = false;
+                }
+                else
+                {
+                    LeftSpaceFLG = true;
+                }
+                RightSpaceFLG = false;
+            }
+
+
+            //左右に半角スペースを１つずつ
+            if ( LeftSpaceFLG == true )
+            {
+                TargetStr = " " + TargetStr;
+            }
+
+            if ( RightSpaceFLG == true )
+            {
+                TargetStr = TargetStr + " ";
+            }
+
+            //Console.Beep(); //【警告音】デバッグモード実行中
+            //  http://dobon.net/vb/dotnet/vb2cs/vbbeep.html
+
+            return TargetStr;
         }
 
         private string GetAppPath()
@@ -544,13 +583,24 @@ namespace TYPE_C_NowplayingEditor
 
         private void ComboBoxEditStr_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // ComboBoxEditStr_SelectionChangeCommitted(object sender, EventArgs e) {} に移動
+            // その他の処理（↓）は、ComboBoxEditStr_SelectionChangeCommitted(object sender, EventArgs e) {} に移動
+
+            int myIDX = this.ComboBoxEditStr.SelectedIndex;
+            if ( myIDX != -1 )
+            {
+                this.EditBOX.Text = this.ComboBoxEditStr.Text;  //履歴のINDEXが変化したとき、内容をEditBoxに反映する
+            }
         }
 
         private void EditBOX_KeyDown(object sender, KeyEventArgs e)
         {
             if ( e.KeyCode == Keys.A && e.Control ){
                 ((TextBox)sender).SelectAll();
+            }
+
+            if ( e.KeyCode == Keys.Z && e.Control )
+            {
+                ButtonUNDO_Click(sender,e);
             }
 
             if ( this.ComboBoxEditStr.Items.Count >= 1 )
@@ -607,6 +657,12 @@ namespace TYPE_C_NowplayingEditor
                         if (wComboBox == wEditBox)
                         {
                             this.EditBOX.Text = "";
+
+                            if (this.ComboBoxEditStr.Items.Count >= 1)
+                            {
+                                this.ComboBoxEditStr.SelectedIndex = 0;
+                                //this.EditBOX.Text = this.ComboBoxEditStr.Text;
+                            }
                         }
                         else
                         {
