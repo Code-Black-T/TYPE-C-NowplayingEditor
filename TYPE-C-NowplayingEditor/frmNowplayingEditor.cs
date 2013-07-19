@@ -590,6 +590,15 @@ namespace TYPE_C_NowplayingEditor
             if ( myIDX != -1 )
             {
                 this.EditBOX.Text = this.ComboBoxEditStr.Text;  //履歴のINDEXが変化したとき、内容をEditBoxに反映する
+                this.EditBOX.Text  = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
+
+                //追加：コンボボックスの値が変更されたら、デフォルトで最終行までスクロール
+                LastSelectionStart = this.EditBOX.Text.Length;
+                LastSelectionLength = 0;
+
+                this.EditBOX.Focus();
+                this.EditBOX.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
+                this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
             }
         }
 
@@ -661,7 +670,7 @@ namespace TYPE_C_NowplayingEditor
 
                             if (this.ComboBoxEditStr.Items.Count >= 1)
                             {
-                                this.ComboBoxEditStr.SelectedIndex = 0;
+                                //this.ComboBoxEditStr.SelectedIndex = 0;
                                 //this.EditBOX.Text = this.ComboBoxEditStr.Text;
                             }
                         }
