@@ -88,7 +88,8 @@ namespace TYPE_C_NowplayingEditor
                  this.rButton16, this.rButton17, this.rButton18, this.rButton19, this.rButton20 ,
                  this.rButton21, this.rButton22, this.rButton23, this.rButton24, this.rButton25 ,
                  this.rButton26, this.rButton27, this.rButton28, this.rButton29, this.rButton30 ,
-                 this.rButton31, this.rButton32, this.rButton33, this.rButton34, this.rButton35
+                 this.rButton31, this.rButton32, this.rButton33, this.rButton34, this.rButton35 ,
+                 this.rButton36, this.rButton37
                 };
 
             //イベントハンドラに関連付け（必要な時のみ）
