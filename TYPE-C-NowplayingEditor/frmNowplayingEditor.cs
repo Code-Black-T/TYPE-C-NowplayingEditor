@@ -670,7 +670,7 @@ namespace TYPE_C_NowplayingEditor
 
                             if (this.ComboBoxEditStr.Items.Count >= 1)
                             {
-                                //this.ComboBoxEditStr.SelectedIndex = 0;
+                                this.ComboBoxEditStr.SelectedIndex = 0;
                                 //this.EditBOX.Text = this.ComboBoxEditStr.Text;
                             }
                         }
