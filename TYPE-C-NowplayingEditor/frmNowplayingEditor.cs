@@ -584,22 +584,8 @@ namespace TYPE_C_NowplayingEditor
 
         private void ComboBoxEditStr_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // その他の処理（↓）は、ComboBoxEditStr_SelectionChangeCommitted(object sender, EventArgs e) {} に移動
-
-            int myIDX = this.ComboBoxEditStr.SelectedIndex;
-            if ( myIDX != -1 )
-            {
-                this.EditBOX.Text = this.ComboBoxEditStr.Text;  //履歴のINDEXが変化したとき、内容をEditBoxに反映する
-                this.EditBOX.Text  = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
-
-                //追加：コンボボックスの値が変更されたら、デフォルトで最終行までスクロール
-                LastSelectionStart = this.EditBOX.Text.Length;
-                LastSelectionLength = 0;
-
-                this.EditBOX.Focus();
-                this.EditBOX.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
-                this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
-            }
+            //ユーザーが選択した時にも反応するが、プログラムが選択状態を変更した時にも反応してしまうため、
+            //omboBoxEditStr_SelectionChangeCommitted を使う
         }
 
         private void EditBOX_KeyDown(object sender, KeyEventArgs e)
