@@ -699,11 +699,18 @@ namespace TYPE_C_NowplayingEditor
 
         private void ComboBoxEditStr_KeyUp(object sender, KeyEventArgs e)
         {
-            this.EditBOX.Text = this.ComboBoxEditStr.Text;  //↑↓でリストを選択した際、コンボボックスの値をEditBOXに反映
-            this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
+            if (this.ComboBoxEditStr.Text == "")
+            {
+                TextBoxKeepStr = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
+            }
+            else
+            {
+                this.EditBOX.Text = this.ComboBoxEditStr.Text;  //↑↓でリストを選択した際、コンボボックスの値をEditBOXに反映
+                this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
 
-            LastSelectionStart = this.EditBOX.Text.Length;
-            LastSelectionLength = 0;
+                LastSelectionStart = this.EditBOX.Text.Length;
+                LastSelectionLength = 0;
+            }
         }
     }
 }
