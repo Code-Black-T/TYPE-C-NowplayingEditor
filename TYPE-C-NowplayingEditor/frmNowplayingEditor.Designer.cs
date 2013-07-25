@@ -605,6 +605,8 @@
             this.ComboBoxEditStr.Size = new System.Drawing.Size(866, 23);
             this.ComboBoxEditStr.TabIndex = 2;
             this.ComboBoxEditStr.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxEditStr_SelectionChangeCommitted);
+            this.ComboBoxEditStr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ComboBoxEditStr_KeyDown);
+            this.ComboBoxEditStr.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ComboBoxEditStr_KeyUp);
             // 
             // Label2
             // 

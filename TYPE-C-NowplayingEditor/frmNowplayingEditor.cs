@@ -132,7 +132,7 @@ namespace TYPE_C_NowplayingEditor
             readEditData();
 
             //tweettextFromMainToEditor = 「基本設定」の TextBox1.text
-            tweettextFromMainToEditor = Form1.TextBox1.Text(); //■
+            tweettextFromMainToEditor = Form1.TextBox1.Text; //■
 
             this.EditBOX.Text = tweettextFromMainToEditor; //■「基本設定」側から、「ツイートする文字の設定」を読み込む
             this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
@@ -687,6 +687,23 @@ namespace TYPE_C_NowplayingEditor
             this.EditBOX.Focus();
             this.EditBOX.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
             this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
+        }
+
+        private void ComboBoxEditStr_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Up || e.KeyData == Keys.Down)
+            {
+                this.ComboBoxEditStr.DroppedDown = true;  //リストを自動展開
+            }
+        }
+
+        private void ComboBoxEditStr_KeyUp(object sender, KeyEventArgs e)
+        {
+            this.EditBOX.Text = this.ComboBoxEditStr.Text;  //↑↓でリストを選択した際、コンボボックスの値をEditBOXに反映
+            this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
+
+            LastSelectionStart = this.EditBOX.Text.Length;
+            LastSelectionLength = 0;
         }
     }
 }
