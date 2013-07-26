@@ -395,7 +395,8 @@ namespace TYPE_C_NowplayingEditor
         private void ButtonQuit_Click(object sender, EventArgs e)  //キャンセルボタン押下
         {
             if (( TextBoxKeepStr != this.EditBOX.Text || this.ComboBoxEditStr.Items.Count == 0 ) &&
-                ( this.EditBOX.Text != "" ) ) {
+                (this.EditBOX.Text != "") && ( this.ComboBoxEditStr.Items.Contains( this.EditBOX.Text.Replace("\r\n", "$NEWLINE") ) == false ) )
+            {
 
                 if ( MessageBox.Show("最後に編集したデータを履歴に保存しますか？", "確認", 
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes ) {
@@ -710,6 +711,14 @@ namespace TYPE_C_NowplayingEditor
 
                 LastSelectionStart = this.EditBOX.Text.Length;
                 LastSelectionLength = 0;
+            }
+        }
+
+        private void ComboBoxEditStr_Enter(object sender, EventArgs e)
+        {
+            if (this.ComboBoxEditStr.Items.Contains(this.EditBOX.Text.Replace("\r\n", "$NEWLINE")) == false)
+            {
+                TextBoxKeepStr = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
             }
         }
     }
