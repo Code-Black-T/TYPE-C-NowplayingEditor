@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
+// MainWindow.TextBoxTweetText.Text とツイート設定をやり取り
+
 namespace TYPE_C_NowplayingEditor
 {
 
@@ -40,47 +43,7 @@ namespace TYPE_C_NowplayingEditor
             // http://social.msdn.microsoft.com/Forums/ja-JP/csharpgeneralja/thread/29b6239c-c672-4592-9b03-3784ad366b8c/
 
             ////ボタンコントロール配列の作成
-            //this.replaceButtons = new System.Windows.Forms.Button[35];
 
-            ////ボタンコントロールの配列にすでに作成されているインスタンスを代入
-            //this.replaceButtons[0] = this.rButton1;
-            //this.replaceButtons[1] = this.rButton2;
-            //this.replaceButtons[2] = this.rButton3;
-            //this.replaceButtons[3] = this.rButton4;
-            //this.replaceButtons[4] = this.rButton5;
-            //this.replaceButtons[5] = this.rButton6;
-            //this.replaceButtons[6] = this.rButton7;
-            //this.replaceButtons[7] = this.rButton8;
-            //this.replaceButtons[8] = this.rButton9;
-            //this.replaceButtons[9] = this.rButton10;
-            //this.replaceButtons[10] = this.rButton11;
-            //this.replaceButtons[11] = this.rButton12;
-            //this.replaceButtons[12] = this.rButton13;
-            //this.replaceButtons[13] = this.rButton14;
-            //this.replaceButtons[14] = this.rButton15;
-            //this.replaceButtons[15] = this.rButton16;
-            //this.replaceButtons[16] = this.rButton17;
-            //this.replaceButtons[17] = this.rButton18;
-            //this.replaceButtons[18] = this.rButton19;
-            //this.replaceButtons[19] = this.rButton20;
-            //this.replaceButtons[20] = this.rButton21;
-            //this.replaceButtons[21] = this.rButton22;
-            //this.replaceButtons[22] = this.rButton23;
-            //this.replaceButtons[23] = this.rButton24;
-            //this.replaceButtons[24] = this.rButton25;
-            //this.replaceButtons[25] = this.rButton26;
-            //this.replaceButtons[26] = this.rButton27;
-            //this.replaceButtons[27] = this.rButton28;
-            //this.replaceButtons[28] = this.rButton29;
-            //this.replaceButtons[29] = this.rButton30;
-            //this.replaceButtons[30] = this.rButton31;
-            //this.replaceButtons[31] = this.rButton32;
-            //this.replaceButtons[32] = this.rButton33;
-            //this.replaceButtons[33] = this.rButton34;
-            //this.replaceButtons[34] = this.rButton35;
-
-
-            //または、次のようにもできる
             this.replaceButtons = new System.Windows.Forms.Button[]
                 {this.rButton1,  this.rButton2,  this.rButton3,  this.rButton4,  this.rButton5 ,
                  this.rButton6,  this.rButton7,  this.rButton8,  this.rButton9,  this.rButton10 ,
@@ -88,8 +51,7 @@ namespace TYPE_C_NowplayingEditor
                  this.rButton16, this.rButton17, this.rButton18, this.rButton19, this.rButton20 ,
                  this.rButton21, this.rButton22, this.rButton23, this.rButton24, this.rButton25 ,
                  this.rButton26, this.rButton27, this.rButton28, this.rButton29, this.rButton30 ,
-                 this.rButton31, this.rButton32, this.rButton33, this.rButton34, this.rButton35 ,
-                 this.rButton36, this.rButton37
+                 this.rButton31, this.rButton32, this.rButton33, this.rButton34
                 };
 
             //イベントハンドラに関連付け（必要な時のみ）
@@ -131,10 +93,10 @@ namespace TYPE_C_NowplayingEditor
 
             readEditData();
 
-            //tweettextFromMainToEditor = 「基本設定」の TextBox1.text
-            tweettextFromMainToEditor = Form1.TextBox1.Text; //■
+            //tweettextFromMainToEditor = 「メインウィンドウ」の TextBox.text
+            tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
 
-            this.EditBOX.Text = tweettextFromMainToEditor; //■「基本設定」側から、「ツイートする文字の設定」を読み込む
+            this.EditBOX.Text = tweettextFromMainToEditor; //「メインウィンドウ」側から、「ツイートする文字の設定」を読み込む
             this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
 
             if ( this.ComboBoxEditStr.Items.Count == 0 ){
@@ -168,7 +130,7 @@ namespace TYPE_C_NowplayingEditor
 
             if ((Control.ModifierKeys & Keys.Control) == Keys.Control) {
 
-            //【隠し機能】Ctrlキーを押しながら、ボタンをクリックする → デバッグモード
+                //【隠し機能】【デバッグモード】Ctrlキーを押しながら、ボタンをクリックする
                 string tempStr;
                 tempStr = ((System.Windows.Forms.Button)sender).Text;
 
@@ -212,7 +174,7 @@ namespace TYPE_C_NowplayingEditor
                     if ( tempStr == "space" ) {
                         tempStr = " ";
                     }else{
-                        //上のtempStr をそのまま使う  //半角スペースが含まれない場合は文字列全体
+                        //上のtempStr をそのまま使う（半角スペースが含まれない場合は文字列全体）
                     }
                 }
 
@@ -220,12 +182,8 @@ namespace TYPE_C_NowplayingEditor
             }
         }
 
-        private string AddSpaceToLeftAndRight(String TargetStr)
+        private string AddSpaceToLeftAndRight(String TargetStr)  //左右に半角スペースを１つずつ追加する関数
         {
-
-            //【隠し機能】Ctrlキーを押しながら、ボタンをクリックする → デバッグモード
-            //string tempStr;
-            //tempStr = ((System.Windows.Forms.Button)sender).Text;
 
             bool LeftSpaceFLG = false;
             bool RightSpaceFLG = false;
@@ -404,10 +362,10 @@ namespace TYPE_C_NowplayingEditor
                     string ComboStr;
 
                     ComboStr = this.EditBOX.Text.Replace("\r\n", "$NEWLINE");
-                    tweettextFromEditorToMain = this.EditBOX.Text.Replace("\r\n", "$NEWLINE"); //■メイン側へは、置き換え文字 使用
+                    tweettextFromEditorToMain = this.EditBOX.Text.Replace("\r\n", "$NEWLINE"); //メイン側へは、置き換え文字 使用
 
-                    //AppSettingEmbeddedXML() //■AppSetting.xmlは、置き換え文字必須！  一度改行が入ると次回以降保存ができない。
-                    Form1.TextBox1.Text = tweettextFromEditorToMain; //■
+                    //AppSettingEmbeddedXML()
+                    MainWindow.TextBoxTweetText.Text = tweettextFromEditorToMain;
 
                     // http://www.itlab51.com/?page_id=46
                     int myIDX = ( this.ComboBoxEditStr.Items.IndexOf(ComboStr) );
@@ -459,7 +417,7 @@ namespace TYPE_C_NowplayingEditor
 
             TextBoxKeepStr = this.EditBOX.Text;
 
-            this.EditBOX.Text = "NowPlaying $TITLE - $ARTIST(Album:$ALBUM) #nowplaying";
+            this.EditBOX.Text = "NowPlaying $TITLE - $ARTIST(Album:$ALBUMNAME) #nowplaying #なうぷれ";
 
             LastSelectionStart = this.EditBOX.Text.Length;
             LastSelectionLength = 0;
@@ -499,10 +457,10 @@ namespace TYPE_C_NowplayingEditor
                 string ComboStr;
 
                 ComboStr = this.EditBOX.Text.Replace("\r\n", "$NEWLINE");
-                tweettextFromEditorToMain = this.EditBOX.Text.Replace("\r\n", "$NEWLINE"); //■メイン側へは、置き換え文字 使用
+                tweettextFromEditorToMain = this.EditBOX.Text.Replace("\r\n", "$NEWLINE"); //メイン側へは、置き換え文字 使用
 
-                //AppSettingEmbeddedXML() //■AppSetting.xmlは、置き換え文字必須！  一度改行が入ると次回以降保存ができない。
-                Form1.TextBox1.Text = tweettextFromEditorToMain; //■
+                //AppSettingEmbeddedXML()
+                MainWindow.TextBoxTweetText.Text = tweettextFromEditorToMain;
 
                 // http://www.itlab51.com/?page_id=46
                 int myIDX = (this.ComboBoxEditStr.Items.IndexOf(ComboStr));
@@ -547,10 +505,12 @@ namespace TYPE_C_NowplayingEditor
 
         private void ButtonUNDO_Click(object sender, EventArgs e)
         {
+            string workStr = this.EditBOX.Text;  // REDO用 退避変数
             this.EditBOX.Text = TextBoxKeepStr;
+            TextBoxKeepStr = workStr;
 
-            LastSelectionStart = TextBoxKeepStr.Length; //UNDO後 初期化
-            LastSelectionLength = 0; //UNDO後 初期化
+            LastSelectionStart = this.EditBOX.Text.Length; //UNDO・REDO後 初期化
+            LastSelectionLength = 0; //UNDO・REDO後 初期化
 
             this.EditBOX.Focus();
             this.EditBOX.Select( LastSelectionStart, LastSelectionLength ); //現在入力中の位置にカーソルを移動
@@ -640,9 +600,7 @@ namespace TYPE_C_NowplayingEditor
                         this.ComboBoxEditStr.Text, "確認", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                     {
 
-                        this.ComboBoxEditStr.Items.RemoveAt(myIDX); //【隠し機能】Ctrlキーを押しながら、リストをクリックする → 削除
-                        //this.ComboBoxEditStr.DroppedDown = false;  //リストを閉じる
-
+                        this.ComboBoxEditStr.Items.RemoveAt(myIDX); // Ctrlキーを押しながら、リストをクリックする → 削除
 
                         if (this.ComboBoxEditStr.Items.Count == 20)
                         {
@@ -658,7 +616,6 @@ namespace TYPE_C_NowplayingEditor
                             if (this.ComboBoxEditStr.Items.Count >= 1)
                             {
                                 this.ComboBoxEditStr.SelectedIndex = 0;
-                                //this.EditBOX.Text = this.ComboBoxEditStr.Text;
                             }
                         }
                         else

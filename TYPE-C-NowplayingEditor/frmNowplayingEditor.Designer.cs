@@ -50,9 +50,6 @@
             this.rButton19 = new System.Windows.Forms.Button();
             this.rButton20 = new System.Windows.Forms.Button();
             this.rButton18 = new System.Windows.Forms.Button();
-            this.rButton37 = new System.Windows.Forms.Button();
-            this.rButton36 = new System.Windows.Forms.Button();
-            this.rButton35 = new System.Windows.Forms.Button();
             this.rButton34 = new System.Windows.Forms.Button();
             this.rButton33 = new System.Windows.Forms.Button();
             this.rButton32 = new System.Windows.Forms.Button();
@@ -111,9 +108,6 @@
             this.GroupBox2.Controls.Add(this.rButton19);
             this.GroupBox2.Controls.Add(this.rButton20);
             this.GroupBox2.Controls.Add(this.rButton18);
-            this.GroupBox2.Controls.Add(this.rButton37);
-            this.GroupBox2.Controls.Add(this.rButton36);
-            this.GroupBox2.Controls.Add(this.rButton35);
             this.GroupBox2.Controls.Add(this.rButton34);
             this.GroupBox2.Controls.Add(this.rButton33);
             this.GroupBox2.Controls.Add(this.rButton32);
@@ -380,52 +374,16 @@
             this.rButton18.Text = "#nowplaying";
             this.rButton18.UseVisualStyleBackColor = true;
             // 
-            // rButton37
-            // 
-            this.rButton37.AutoSize = true;
-            this.rButton37.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rButton37.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton37.Location = new System.Drawing.Point(632, 276);
-            this.rButton37.Name = "rButton37";
-            this.rButton37.Size = new System.Drawing.Size(247, 30);
-            this.rButton37.TabIndex = 66;
-            this.rButton37.Text = "$NEWLINE 改行";
-            this.rButton37.UseVisualStyleBackColor = true;
-            // 
-            // rButton36
-            // 
-            this.rButton36.AutoSize = true;
-            this.rButton36.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rButton36.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton36.Location = new System.Drawing.Point(338, 276);
-            this.rButton36.Name = "rButton36";
-            this.rButton36.Size = new System.Drawing.Size(295, 30);
-            this.rButton36.TabIndex = 65;
-            this.rButton36.Text = "$PLAYLIST プレイリスト名";
-            this.rButton36.UseVisualStyleBackColor = true;
-            // 
-            // rButton35
-            // 
-            this.rButton35.AutoSize = true;
-            this.rButton35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rButton35.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton35.Location = new System.Drawing.Point(14, 276);
-            this.rButton35.Name = "rButton35";
-            this.rButton35.Size = new System.Drawing.Size(327, 30);
-            this.rButton35.TabIndex = 64;
-            this.rButton35.Text = "$ALARTIST アルバムアーティスト";
-            this.rButton35.UseVisualStyleBackColor = true;
-            // 
             // rButton34
             // 
             this.rButton34.AutoSize = true;
             this.rButton34.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton34.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton34.Location = new System.Drawing.Point(632, 247);
+            this.rButton34.Location = new System.Drawing.Point(632, 276);
             this.rButton34.Name = "rButton34";
             this.rButton34.Size = new System.Drawing.Size(247, 30);
             this.rButton34.TabIndex = 63;
-            this.rButton34.Text = "$RATESTAR レート";
+            this.rButton34.Text = "$YEAR 年";
             this.rButton34.UseVisualStyleBackColor = true;
             // 
             // rButton33
@@ -433,9 +391,9 @@
             this.rButton33.AutoSize = true;
             this.rButton33.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton33.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton33.Location = new System.Drawing.Point(338, 247);
+            this.rButton33.Location = new System.Drawing.Point(240, 276);
             this.rButton33.Name = "rButton33";
-            this.rButton33.Size = new System.Drawing.Size(295, 30);
+            this.rButton33.Size = new System.Drawing.Size(393, 30);
             this.rButton33.TabIndex = 62;
             this.rButton33.Text = "$TRACKNUM トラックナンバー";
             this.rButton33.UseVisualStyleBackColor = true;
@@ -445,11 +403,11 @@
             this.rButton32.AutoSize = true;
             this.rButton32.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton32.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton32.Location = new System.Drawing.Point(14, 247);
+            this.rButton32.Location = new System.Drawing.Point(14, 276);
             this.rButton32.Name = "rButton32";
-            this.rButton32.Size = new System.Drawing.Size(327, 30);
+            this.rButton32.Size = new System.Drawing.Size(228, 30);
             this.rButton32.TabIndex = 61;
-            this.rButton32.Text = "$DISCNUM ディスクナンバー";
+            this.rButton32.Text = "$RATING レート";
             this.rButton32.UseVisualStyleBackColor = true;
             // 
             // rButton31
@@ -457,11 +415,11 @@
             this.rButton31.AutoSize = true;
             this.rButton31.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton31.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton31.Location = new System.Drawing.Point(534, 218);
+            this.rButton31.Location = new System.Drawing.Point(632, 247);
             this.rButton31.Name = "rButton31";
-            this.rButton31.Size = new System.Drawing.Size(345, 30);
+            this.rButton31.Size = new System.Drawing.Size(247, 30);
             this.rButton31.TabIndex = 60;
-            this.rButton31.Text = "$DISCCOUNT ディスク数";
+            this.rButton31.Text = "$PLAYEDTIMES 再生回数";
             this.rButton31.UseVisualStyleBackColor = true;
             // 
             // rButton30
@@ -469,11 +427,11 @@
             this.rButton30.AutoSize = true;
             this.rButton30.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton30.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton30.Location = new System.Drawing.Point(240, 218);
+            this.rButton30.Location = new System.Drawing.Point(240, 247);
             this.rButton30.Name = "rButton30";
-            this.rButton30.Size = new System.Drawing.Size(295, 30);
+            this.rButton30.Size = new System.Drawing.Size(393, 30);
             this.rButton30.TabIndex = 59;
-            this.rButton30.Text = "$COMPOSER 作曲者";
+            this.rButton30.Text = "$LASTPLAYED 最後に再生した日付";
             this.rButton30.UseVisualStyleBackColor = true;
             // 
             // rButton29
@@ -481,11 +439,11 @@
             this.rButton29.AutoSize = true;
             this.rButton29.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton29.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton29.Location = new System.Drawing.Point(14, 218);
+            this.rButton29.Location = new System.Drawing.Point(14, 247);
             this.rButton29.Name = "rButton29";
             this.rButton29.Size = new System.Drawing.Size(228, 30);
             this.rButton29.TabIndex = 58;
-            this.rButton29.Text = "$COMMENT コメント";
+            this.rButton29.Text = "$GENRE ジャンル";
             this.rButton29.UseVisualStyleBackColor = true;
             // 
             // rButton28
@@ -493,11 +451,11 @@
             this.rButton28.AutoSize = true;
             this.rButton28.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton28.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton28.Location = new System.Drawing.Point(681, 189);
+            this.rButton28.Location = new System.Drawing.Point(436, 218);
             this.rButton28.Name = "rButton28";
-            this.rButton28.Size = new System.Drawing.Size(198, 30);
+            this.rButton28.Size = new System.Drawing.Size(443, 30);
             this.rButton28.TabIndex = 57;
-            this.rButton28.Text = "$GENRE ジャンル";
+            this.rButton28.Text = "$DISCNUMBER ディスクナンバー";
             this.rButton28.UseVisualStyleBackColor = true;
             // 
             // rButton27
@@ -505,11 +463,11 @@
             this.rButton27.AutoSize = true;
             this.rButton27.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton27.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton27.Location = new System.Drawing.Point(485, 189);
+            this.rButton27.Location = new System.Drawing.Point(14, 218);
             this.rButton27.Name = "rButton27";
-            this.rButton27.Size = new System.Drawing.Size(197, 30);
+            this.rButton27.Size = new System.Drawing.Size(424, 30);
             this.rButton27.TabIndex = 56;
-            this.rButton27.Text = "$YEAR 年";
+            this.rButton27.Text = "$DISCCOUNT ディスク枚数";
             this.rButton27.UseVisualStyleBackColor = true;
             // 
             // rButton26
@@ -517,11 +475,11 @@
             this.rButton26.AutoSize = true;
             this.rButton26.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton26.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton26.Location = new System.Drawing.Point(191, 189);
+            this.rButton26.Location = new System.Drawing.Point(534, 189);
             this.rButton26.Name = "rButton26";
-            this.rButton26.Size = new System.Drawing.Size(296, 30);
+            this.rButton26.Size = new System.Drawing.Size(345, 30);
             this.rButton26.TabIndex = 55;
-            this.rButton26.Text = "$LASTPLAYED 最終再生日";
+            this.rButton26.Text = "$COMPOSER 作曲家";
             this.rButton26.UseVisualStyleBackColor = true;
             // 
             // rButton25
@@ -529,11 +487,11 @@
             this.rButton25.AutoSize = true;
             this.rButton25.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton25.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton25.Location = new System.Drawing.Point(14, 189);
+            this.rButton25.Location = new System.Drawing.Point(289, 189);
             this.rButton25.Name = "rButton25";
-            this.rButton25.Size = new System.Drawing.Size(178, 30);
+            this.rButton25.Size = new System.Drawing.Size(246, 30);
             this.rButton25.TabIndex = 54;
-            this.rButton25.Text = "$RATE レート";
+            this.rButton25.Text = "$COMMENT コメント";
             this.rButton25.UseVisualStyleBackColor = true;
             // 
             // rButton24
@@ -541,11 +499,11 @@
             this.rButton24.AutoSize = true;
             this.rButton24.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton24.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton24.Location = new System.Drawing.Point(632, 160);
+            this.rButton24.Location = new System.Drawing.Point(14, 189);
             this.rButton24.Name = "rButton24";
-            this.rButton24.Size = new System.Drawing.Size(247, 30);
+            this.rButton24.Size = new System.Drawing.Size(277, 30);
             this.rButton24.TabIndex = 53;
-            this.rButton24.Text = "$COUNT 再生回数";
+            this.rButton24.Text = "$ALBUMNAME アルバム";
             this.rButton24.UseVisualStyleBackColor = true;
             // 
             // rButton23
@@ -553,11 +511,11 @@
             this.rButton23.AutoSize = true;
             this.rButton23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton23.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton23.Location = new System.Drawing.Point(387, 160);
+            this.rButton23.Location = new System.Drawing.Point(534, 160);
             this.rButton23.Name = "rButton23";
-            this.rButton23.Size = new System.Drawing.Size(247, 30);
+            this.rButton23.Size = new System.Drawing.Size(345, 30);
             this.rButton23.TabIndex = 52;
-            this.rButton23.Text = "$ALBUM アルバム";
+            this.rButton23.Text = "$ALBUMARTIST アルバムアーティスト";
             this.rButton23.UseVisualStyleBackColor = true;
             // 
             // rButton22
@@ -565,9 +523,9 @@
             this.rButton22.AutoSize = true;
             this.rButton22.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton22.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton22.Location = new System.Drawing.Point(191, 160);
+            this.rButton22.Location = new System.Drawing.Point(289, 160);
             this.rButton22.Name = "rButton22";
-            this.rButton22.Size = new System.Drawing.Size(197, 30);
+            this.rButton22.Size = new System.Drawing.Size(246, 30);
             this.rButton22.TabIndex = 51;
             this.rButton22.Text = "$ARTIST アーティスト";
             this.rButton22.UseVisualStyleBackColor = true;
@@ -579,13 +537,14 @@
             this.rButton21.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.rButton21.Location = new System.Drawing.Point(14, 160);
             this.rButton21.Name = "rButton21";
-            this.rButton21.Size = new System.Drawing.Size(178, 30);
+            this.rButton21.Size = new System.Drawing.Size(277, 30);
             this.rButton21.TabIndex = 50;
             this.rButton21.Text = "$TITLE 曲名";
             this.rButton21.UseVisualStyleBackColor = true;
             // 
             // EditBOX
             // 
+            this.EditBOX.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.EditBOX.Location = new System.Drawing.Point(14, 46);
             this.EditBOX.Multiline = true;
             this.EditBOX.Name = "EditBOX";
@@ -707,7 +666,6 @@
         internal System.Windows.Forms.Button rButton15;
         internal System.Windows.Forms.Button rButton20;
         internal System.Windows.Forms.Button rButton19;
-        internal System.Windows.Forms.Button rButton37;
         internal System.Windows.Forms.Button rButton14;
         internal System.Windows.Forms.Button rButton6;
         internal System.Windows.Forms.Button rButton5;
@@ -717,8 +675,6 @@
         internal System.Windows.Forms.Button rButton3;
         internal System.Windows.Forms.Button rButton4;
         internal System.Windows.Forms.Button rButton2;
-        internal System.Windows.Forms.Button rButton36;
-        internal System.Windows.Forms.Button rButton35;
         internal System.Windows.Forms.Button rButton33;
         internal System.Windows.Forms.Button rButton31;
         internal System.Windows.Forms.Button rButton34;
