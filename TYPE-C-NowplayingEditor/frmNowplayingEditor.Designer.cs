@@ -395,7 +395,7 @@
             this.rButton33.Name = "rButton33";
             this.rButton33.Size = new System.Drawing.Size(393, 30);
             this.rButton33.TabIndex = 62;
-            this.rButton33.Text = "$TRACKNUM トラックナンバー";
+            this.rButton33.Text = "$TRACKNUMBER トラックナンバー";
             this.rButton33.UseVisualStyleBackColor = true;
             // 
             // rButton32
