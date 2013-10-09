@@ -72,6 +72,7 @@
             this.ButtonDefault = new System.Windows.Forms.Button();
             this.ButtonSet = new System.Windows.Forms.Button();
             this.ButtonQuit = new System.Windows.Forms.Button();
+            this.rButton35 = new System.Windows.Forms.Button();
             this.GroupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -105,9 +106,10 @@
             this.GroupBox2.Controls.Add(this.rButton10);
             this.GroupBox2.Controls.Add(this.rButton11);
             this.GroupBox2.Controls.Add(this.rButton13);
-            this.GroupBox2.Controls.Add(this.rButton19);
             this.GroupBox2.Controls.Add(this.rButton20);
+            this.GroupBox2.Controls.Add(this.rButton19);
             this.GroupBox2.Controls.Add(this.rButton18);
+            this.GroupBox2.Controls.Add(this.rButton35);
             this.GroupBox2.Controls.Add(this.rButton34);
             this.GroupBox2.Controls.Add(this.rButton33);
             this.GroupBox2.Controls.Add(this.rButton32);
@@ -343,10 +345,10 @@
             this.rButton19.AutoSize = true;
             this.rButton19.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton19.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton19.Location = new System.Drawing.Point(338, 305);
+            this.rButton19.Location = new System.Drawing.Point(436, 305);
             this.rButton19.Name = "rButton19";
-            this.rButton19.Size = new System.Drawing.Size(295, 30);
-            this.rButton19.TabIndex = 68;
+            this.rButton19.Size = new System.Drawing.Size(197, 30);
+            this.rButton19.TabIndex = 91;
             this.rButton19.Text = "#NowPlaying";
             this.rButton19.UseVisualStyleBackColor = true;
             // 
@@ -358,7 +360,7 @@
             this.rButton20.Location = new System.Drawing.Point(632, 305);
             this.rButton20.Name = "rButton20";
             this.rButton20.Size = new System.Drawing.Size(247, 30);
-            this.rButton20.TabIndex = 69;
+            this.rButton20.TabIndex = 97;
             this.rButton20.Text = "#なうぷれ";
             this.rButton20.UseVisualStyleBackColor = true;
             // 
@@ -367,10 +369,10 @@
             this.rButton18.AutoSize = true;
             this.rButton18.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rButton18.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton18.Location = new System.Drawing.Point(14, 305);
+            this.rButton18.Location = new System.Drawing.Point(240, 305);
             this.rButton18.Name = "rButton18";
-            this.rButton18.Size = new System.Drawing.Size(327, 30);
-            this.rButton18.TabIndex = 67;
+            this.rButton18.Size = new System.Drawing.Size(197, 30);
+            this.rButton18.TabIndex = 90;
             this.rButton18.Text = "#nowplaying";
             this.rButton18.UseVisualStyleBackColor = true;
             // 
@@ -383,7 +385,7 @@
             this.rButton34.Name = "rButton34";
             this.rButton34.Size = new System.Drawing.Size(247, 30);
             this.rButton34.TabIndex = 63;
-            this.rButton34.Text = "$YEAR 年";
+            this.rButton34.Text = "$YEAR リリース年";
             this.rButton34.UseVisualStyleBackColor = true;
             // 
             // rButton33
@@ -407,7 +409,7 @@
             this.rButton32.Name = "rButton32";
             this.rButton32.Size = new System.Drawing.Size(228, 30);
             this.rButton32.TabIndex = 61;
-            this.rButton32.Text = "$RATING レート";
+            this.rButton32.Text = "$RATING 評価";
             this.rButton32.UseVisualStyleBackColor = true;
             // 
             // rButton31
@@ -503,7 +505,7 @@
             this.rButton24.Name = "rButton24";
             this.rButton24.Size = new System.Drawing.Size(277, 30);
             this.rButton24.TabIndex = 53;
-            this.rButton24.Text = "$ALBUMNAME アルバム";
+            this.rButton24.Text = "$ALBUMNAME アルバム名";
             this.rButton24.UseVisualStyleBackColor = true;
             // 
             // rButton23
@@ -527,7 +529,7 @@
             this.rButton22.Name = "rButton22";
             this.rButton22.Size = new System.Drawing.Size(246, 30);
             this.rButton22.TabIndex = 51;
-            this.rButton22.Text = "$ARTIST アーティスト";
+            this.rButton22.Text = "$ARTIST アーティスト名";
             this.rButton22.UseVisualStyleBackColor = true;
             // 
             // rButton21
@@ -633,6 +635,18 @@
             this.ButtonQuit.UseVisualStyleBackColor = true;
             this.ButtonQuit.Click += new System.EventHandler(this.ButtonQuit_Click);
             // 
+            // rButton35
+            // 
+            this.rButton35.AutoSize = true;
+            this.rButton35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rButton35.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.rButton35.Location = new System.Drawing.Point(14, 305);
+            this.rButton35.Name = "rButton35";
+            this.rButton35.Size = new System.Drawing.Size(234, 30);
+            this.rButton35.TabIndex = 64;
+            this.rButton35.Text = "$NEWLINE 改行";
+            this.rButton35.UseVisualStyleBackColor = true;
+            // 
             // frmNowplayingEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -700,6 +714,7 @@
         internal System.Windows.Forms.Button rButton1;
         internal System.Windows.Forms.Button rButton17;
         internal System.Windows.Forms.Button rButton16;
+        internal System.Windows.Forms.Button rButton35;
     }
 }
 
