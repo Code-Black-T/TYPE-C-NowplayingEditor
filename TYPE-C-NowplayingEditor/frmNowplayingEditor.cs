@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using System.Runtime.InteropServices;
 
 // MainWindow.TextBoxTweetText.Text とツイート設定をやり取り
 
@@ -15,10 +15,14 @@ namespace TYPE_C_NowplayingEditor
 
     public partial class frmNowplayingEditor : Form
     {
+
         public frmNowplayingEditor()
         {
             InitializeComponent();
         }
+
+        public const uint WM_GETTEXT = 0x000D;
+        public const uint WM_SETTEXT = 0x000C;
 
         public string tweettextFromEditorToMain;
         public string tweettextFromMainToEditor;
@@ -94,7 +98,9 @@ namespace TYPE_C_NowplayingEditor
             readEditData();
 
             //tweettextFromMainToEditor = 「メインウィンドウ」の TextBox.text
-            tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
+            //tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
+
+            tweettextFromMainToEditor = GetOrSetText("GET");
 
             this.EditBOX.Text = tweettextFromMainToEditor; //「メインウィンドウ」側から、「ツイートする文字の設定」を読み込む
             this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
@@ -356,53 +362,53 @@ namespace TYPE_C_NowplayingEditor
                 (this.EditBOX.Text != "") && ( this.ComboBoxEditStr.Items.Contains( this.EditBOX.Text.Replace("\r\n", "$NEWLINE") ) == false ) )
             {
 
-                if ( MessageBox.Show("最後に編集したデータを履歴に保存しますか？", "確認", 
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes ) {
+                //if ( MessageBox.Show("最後に編集したデータを履歴に保存しますか？", "確認", 
+                //    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes ) {
 
-                    string ComboStr;
+                //    string ComboStr;
 
-                    ComboStr = this.EditBOX.Text.Replace("\r\n", "$NEWLINE");
-                    tweettextFromEditorToMain = this.EditBOX.Text.Replace("\r\n", "$NEWLINE"); //メイン側へは、置き換え文字 使用
+                //    ComboStr = this.EditBOX.Text.Replace("\r\n", "$NEWLINE");
+                //    tweettextFromEditorToMain = this.EditBOX.Text.Replace("\r\n", "$NEWLINE"); //メイン側へは、置き換え文字 使用
 
-                    //AppSettingEmbeddedXML()
-                    MainWindow.TextBoxTweetText.Text = tweettextFromEditorToMain;
+                //    //AppSettingEmbeddedXML()
+                //    //MainWindow.TextBoxTweetText.Text = tweettextFromEditorToMain;
 
-                    // http://www.itlab51.com/?page_id=46
-                    int myIDX = ( this.ComboBoxEditStr.Items.IndexOf(ComboStr) );
+                //    // http://www.itlab51.com/?page_id=46
+                //    int myIDX = ( this.ComboBoxEditStr.Items.IndexOf(ComboStr) );
 
-                    if ( myIDX != -1 ) {
-                        this.ComboBoxEditStr.Items.RemoveAt(myIDX); //既に追加しようとしているデータが入っている場合、一旦削除
-                    }
+                //    if ( myIDX != -1 ) {
+                //        this.ComboBoxEditStr.Items.RemoveAt(myIDX); //既に追加しようとしているデータが入っている場合、一旦削除
+                //    }
 
-                    this.ComboBoxEditStr.Items.Insert(0, ComboStr); //最後にセットしたデータをコンボボックスの一番上へ
+                //    this.ComboBoxEditStr.Items.Insert(0, ComboStr); //最後にセットしたデータをコンボボックスの一番上へ
 
-                    this.ComboBoxEditStr.Text = ComboStr;
+                //    this.ComboBoxEditStr.Text = ComboStr;
 
-                    TextBoxKeepStr = ComboStr.Replace("$NEWLINE", "\r\n");
-                }
+                //    TextBoxKeepStr = ComboStr.Replace("$NEWLINE", "\r\n");
+                //}
             }
 
             if ( this.ComboBoxEditStr.Items.Count > 20 ) {
 
-                //  http://dobon.net/vb/dotnet/form/msgbox.html
+                ////  http://dobon.net/vb/dotnet/form/msgbox.html
 
-                DialogResult  myResult;
+                //DialogResult  myResult;
 
-                myResult = MessageBox.Show("履歴の件数が２０件を超えました。古い履歴を削除して終了しますか？" + 
-                        "\r\n" + "１件ずつ削除する場合は、「いいえ」を選択後、削除したい履歴をControlを押しながらクリックして下さい。" +
-                        "\r\n" +
-                        "\r\n" + "「はい」　→ 新しい順に２０件残して終了する" +
-                        "\r\n" + "「いいえ」→ リストを開き、１件ずつ削除する", "確認", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                //myResult = MessageBox.Show("履歴の件数が２０件を超えました。古い履歴を削除して終了しますか？" + 
+                //        "\r\n" + "１件ずつ削除する場合は、「いいえ」を選択後、削除したい履歴をControlを押しながらクリックして下さい。" +
+                //        "\r\n" +
+                //        "\r\n" + "「はい」　→ 新しい順に２０件残して終了する" +
+                //        "\r\n" + "「いいえ」→ リストを開き、１件ずつ削除する", "確認", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
-                if ( myResult == System.Windows.Forms.DialogResult.Yes ) {
-                    //空文
-                }else if ( myResult == System.Windows.Forms.DialogResult.No ) {
-                    this.ComboBoxEditStr.Focus();
-                    this.ComboBoxEditStr.DroppedDown = true;  //リストを自動展開
-                    return;
-                }else if ( myResult == System.Windows.Forms.DialogResult.Cancel ) {
-                    return;
-                }
+                //if ( myResult == System.Windows.Forms.DialogResult.Yes ) {
+                //    //空文
+                //}else if ( myResult == System.Windows.Forms.DialogResult.No ) {
+                //    this.ComboBoxEditStr.Focus();
+                //    this.ComboBoxEditStr.DroppedDown = true;  //リストを自動展開
+                //    return;
+                //}else if ( myResult == System.Windows.Forms.DialogResult.Cancel ) {
+                //    return;
+                //}
             }
 
             writeEditData();
@@ -460,7 +466,12 @@ namespace TYPE_C_NowplayingEditor
                 tweettextFromEditorToMain = this.EditBOX.Text.Replace("\r\n", "$NEWLINE"); //メイン側へは、置き換え文字 使用
 
                 //AppSettingEmbeddedXML()
-                MainWindow.TextBoxTweetText.Text = tweettextFromEditorToMain;
+                //MainWindow.TextBoxTweetText.Text = tweettextFromEditorToMain;
+
+                //クリップボードに文字列をコピーする
+                Clipboard.SetText(tweettextFromEditorToMain);
+
+                GetOrSetText("SET");
 
                 // http://www.itlab51.com/?page_id=46
                 int myIDX = (this.ComboBoxEditStr.Items.IndexOf(ComboStr));
@@ -678,5 +689,138 @@ namespace TYPE_C_NowplayingEditor
                 TextBoxKeepStr = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
             }
         }
+
+    private string GetOrSetText(String myMode)
+    {
+        IntPtr hwnd = IntPtr.Zero;
+        IntPtr hwndChild = IntPtr.Zero;
+
+        //Get a handle for the Calculator Application main window           
+        hwnd = FindWindow(null, "なうぷれTunes");
+
+        //hwnd = FindWindow("CalcFrame", "電卓");
+
+        if (hwnd == IntPtr.Zero)
+        {
+            //MessageBox.Show("アプリが起動されていません。",
+            //                    "警告",
+            //                    MessageBoxButtons.OK);
+
+            string myPath = GetAppPath() + "\\" + "なうぷれTunes.exe";
+            if (System.IO.File.Exists(myPath))
+            {
+                System.Diagnostics.Process.Start(myPath);
+
+                //メッセージキューに現在あるWindowsメッセージをすべて処理する
+                //System.Windows.Forms.Application.DoEvents();
+
+                System.Threading.Thread.Sleep(1500);
+
+                //Get a handle for the Calculator Application main window           
+                hwnd = FindWindow(null, "なうぷれTunes");
+            }
+            else
+            {
+                if (myMode.Equals("SET"))
+                {
+                    MessageBox.Show("クリップボードに ツイート設定 をコピーしました。" + "\r\n" + "「なうぷれTunes」を起動してペーストして下さい。",
+                                        "通知",
+                                        MessageBoxButtons.OK);
+                }
+
+                return "";
+            }
+
+        }
+
+        // http://oshiete.goo.ne.jp/qa/7220109.html
+
+        //メインウィンドウのハンドル取得
+        hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "");
+
+        //タブウィンドウのハンドル取得
+        hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "基本設定");
+
+        //フレームのハンドル取得
+        hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "ツイート設定");
+
+        //テキストボックスのハンドル取得
+        hwndChild = FindWindowEx(hwnd, IntPtr.Zero, null, "");
+
+
+        if (hwndChild == IntPtr.Zero)
+        {
+            //MessageBox.Show("対象オブジェクトが見つかりませんでした。",
+            //                    "警告",
+            //                    MessageBoxButtons.OK);          
+
+            return "";
+        }
+
+        if (myMode.Equals("GET"))
+        {
+
+            StringBuilder sb1 = new StringBuilder(1024);
+            SendMessage(hwndChild, WM_GETTEXT, (IntPtr)sb1.Capacity, sb1);
+
+            this.EditBOX.Text = sb1.ToString();
+            this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
+
+            //MessageBox.Show(sb1.ToString(),
+            //                    "テスト",
+            //                    MessageBoxButtons.OK);
+
+            return this.EditBOX.Text;
+        }
+        else if(myMode.Equals("SET"))
+        {
+            //hwnd = FindWindow(null, "なうぷれTunes");
+            //WakeupWindow(hwnd);
+
+            this.EditBOX.Text = this.EditBOX.Text.Replace("\r\n", "$NEWLINE");
+
+            StringBuilder sb2 = new StringBuilder(this.EditBOX.Text);
+            SendMessage(hwndChild, WM_SETTEXT, IntPtr.Zero, sb2);
+
+            return this.EditBOX.Text;
+        }else{
+            MessageBox.Show("プログラミングエラーです。引数にGETかSETを指定して下さい。",
+                                "警告",
+                                MessageBoxButtons.OK);
+            return "";
+        }
+   }
+
+         [DllImport("user32.dll", CharSet = CharSet.Auto)]
+         static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+         [DllImport("user32.dll", SetLastError = true)]
+         static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+         [DllImport("user32.dll", CharSet = CharSet.Auto)]
+         static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr ptr, StringBuilder lParam);
+
+
+         // 外部プロセスのウィンドウを起動する
+         public static void WakeupWindow(IntPtr hWnd)
+         {
+             // メイン・ウィンドウが最小化されていれば元に戻す
+             if (IsIconic(hWnd))
+             {
+                 ShowWindowAsync(hWnd, SW_RESTORE);
+             }
+
+             // メイン・ウィンドウを最前面に表示する
+             SetForegroundWindow(hWnd);
+         }
+         // 外部プロセスのメイン・ウィンドウを起動するためのWin32 API
+         [DllImport("user32.dll")]
+         private static extern bool SetForegroundWindow(IntPtr hWnd);
+         [DllImport("user32.dll")]
+         private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+         [DllImport("user32.dll")]
+         private static extern bool IsIconic(IntPtr hWnd);
+         // ShowWindowAsync関数のパラメータに渡す定義値
+         private const int SW_RESTORE = 9;  // 画面を元の大きさに戻す
+
     }
+
 }
