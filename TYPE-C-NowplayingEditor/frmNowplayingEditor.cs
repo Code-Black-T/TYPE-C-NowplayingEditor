@@ -411,7 +411,7 @@ namespace TYPE_C_NowplayingEditor
                 //}
             }
 
-            writeEditData();
+            //writeEditData();
 
             //Application.Exit()
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -695,7 +695,8 @@ namespace TYPE_C_NowplayingEditor
         IntPtr hwnd = IntPtr.Zero;
         IntPtr hwndChild = IntPtr.Zero;
 
-        //Get a handle for the Calculator Application main window           
+        //アプリケーションのハンドル取得
+      
         hwnd = FindWindow(null, "なうぷれTunes");
 
         //hwnd = FindWindow("CalcFrame", "電卓");
@@ -721,14 +722,33 @@ namespace TYPE_C_NowplayingEditor
             }
             else
             {
-                if (myMode.Equals("SET"))
+                myPath = GetAppPath() + "\\" + "NowplayingTunes.exe";
+                if (System.IO.File.Exists(myPath))
                 {
-                    MessageBox.Show("クリップボードに ツイート設定 をコピーしました。" + "\r\n" + "「なうぷれTunes」を起動してペーストして下さい。",
-                                        "通知",
-                                        MessageBoxButtons.OK);
-                }
+                    System.Diagnostics.Process.Start(myPath);
 
-                return "";
+                    //メッセージキューに現在あるWindowsメッセージをすべて処理する
+                    //System.Windows.Forms.Application.DoEvents();
+
+                    System.Threading.Thread.Sleep(1500);
+
+                    //Get a handle for the Calculator Application main window           
+                    hwnd = FindWindow(null, "なうぷれTunes");
+                }
+                else
+                {
+                    if (myMode.Equals("SET"))
+                    {
+                        MessageBox.Show("クリップボードに ツイート設定 をコピーしました。" + "\r\n" + "「なうぷれTunes」を起動してペーストして下さい。" + "\r\n" + "\r\n"
+                            + "\r\n"
+                            + "※なうぷれTunes が起動中であれば、アプリ名から" + "\r\n" + "　ウィンドウを特定し、当アプリで編集したデータ" + "\r\n" + "　を自動でセットします。" + "\r\n" + "\r\n" +
+                            "　また当エディターアプリをなうぷれTunesと同じ" + "\r\n" + "　フォルダにいれると、当アプリ起動時になうぷれ" + "\r\n" + "　Tunesを起動できるランチャー機能があります。",
+                                            "通知",
+                                            MessageBoxButtons.OK);
+                    }
+
+                    return "";
+                }
             }
 
         }
@@ -789,6 +809,7 @@ namespace TYPE_C_NowplayingEditor
                                 MessageBoxButtons.OK);
             return "";
         }
+
    }
 
          [DllImport("user32.dll", CharSet = CharSet.Auto)]
