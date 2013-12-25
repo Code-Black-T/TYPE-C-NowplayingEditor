@@ -106,7 +106,7 @@ namespace TYPE_C_NowplayingEditor
             this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
 
             if ( this.ComboBoxEditStr.Items.Count == 0 ){
-                this.ComboBoxEditStr.Text = "NowPlaying $TITLE - $ARTIST(Album:$ALBUM) #nowplaying";
+                this.ComboBoxEditStr.Text = "NowPlaying $TITLE - $ARTIST(Album:$ALBUMNAME) #nowplaying #なうぷれ";
             }else{
                 if ( tweettextFromMainToEditor == "" ){
                     this.ComboBoxEditStr.SelectedIndex = 0;
@@ -577,6 +577,43 @@ namespace TYPE_C_NowplayingEditor
                 //this.ComboBoxEditStr.AutoCompleteMode = AutoCompleteMode.Suggest;
             }
 
+
+            //どの修飾子キー(Shift、Ctrl、およびAlt)が押されているか
+            if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+            {
+                //Console.WriteLine("Shiftキーが押されています。");
+
+                if (e.KeyCode.Equals(Keys.D4))  //キーボードの＄は Shift + 4 , 数字の４は D4
+                {
+                    //Console.WriteLine(" $ が押されました");
+
+                    string ReplaceTextListData =
+
+                    "$TITLE - 曲名" + "\r\n" +
+                    "$ARTIST - アーティスト名" + "\r\n" +
+                    "$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
+                    "$ALBUMNAME - アルバム名" + "\r\n" +
+                    "$COMMENT - コメント" + "\r\n" +
+                    "$COMPOSER - 作曲家" + "\r\n" +
+                    "$DISCCOUNT - ディスク枚数" + "\r\n" +
+                    "$DISCNUMBER - ディスクナンバー" + "\r\n" +
+                    "$GENRE - ジャンル" + "\r\n" +
+                    "$LASTPLAYED - 最後に再生した日付" + "\r\n" +
+                    "$PLAYEDTIMES - 再生回数" + "\r\n" +
+                    "$RATING - 評価" + "\r\n" +
+                    "$TRACKNUMBER - トラックナンバー" + "\r\n" +
+                    "$YEAR - リリース年" + "\r\n" +
+                    "$NEWLINE - 改行" + "\r\n";
+
+                    ContextMenu_Func(ReplaceTextListData);
+
+                    //UI.ReplaceTextList dialog = new UI.ReplaceTextList();
+                    //dialog.Text;
+                    //ContextMenu_Func(dialog.Text);
+
+                }
+            }
+
             LastSelectionStart = this.EditBOX.SelectionStart;
             LastSelectionLength = this.EditBOX.SelectionLength;
 
@@ -690,39 +727,24 @@ namespace TYPE_C_NowplayingEditor
             }
         }
 
-    private string GetOrSetText(String myMode)
-    {
-        IntPtr hwnd = IntPtr.Zero;
-        IntPtr hwndChild = IntPtr.Zero;
-
-        //アプリケーションのハンドル取得
-      
-        hwnd = FindWindow(null, "なうぷれTunes");
-
-        //hwnd = FindWindow("CalcFrame", "電卓");
-
-        if (hwnd == IntPtr.Zero)
+        private string GetOrSetText(String myMode)
         {
-            //MessageBox.Show("アプリが起動されていません。",
-            //                    "警告",
-            //                    MessageBoxButtons.OK);
+            IntPtr hwnd = IntPtr.Zero;
+            IntPtr hwndChild = IntPtr.Zero;
 
-            string myPath = GetAppPath() + "\\" + "なうぷれTunes.exe";
-            if (System.IO.File.Exists(myPath))
+            //アプリケーションのハンドル取得
+      
+            hwnd = FindWindow(null, "なうぷれTunes");
+
+            //hwnd = FindWindow("CalcFrame", "電卓");
+
+            if (hwnd == IntPtr.Zero)
             {
-                System.Diagnostics.Process.Start(myPath);
+                //MessageBox.Show("アプリが起動されていません。",
+                //                    "警告",
+                //                    MessageBoxButtons.OK);
 
-                //メッセージキューに現在あるWindowsメッセージをすべて処理する
-                //System.Windows.Forms.Application.DoEvents();
-
-                System.Threading.Thread.Sleep(1500);
-
-                //Get a handle for the Calculator Application main window           
-                hwnd = FindWindow(null, "なうぷれTunes");
-            }
-            else
-            {
-                myPath = GetAppPath() + "\\" + "NowplayingTunes.exe";
+                string myPath = GetAppPath() + "\\" + "なうぷれTunes.exe";
                 if (System.IO.File.Exists(myPath))
                 {
                     System.Diagnostics.Process.Start(myPath);
@@ -737,92 +759,222 @@ namespace TYPE_C_NowplayingEditor
                 }
                 else
                 {
-                    if (myMode.Equals("SET"))
+                    myPath = GetAppPath() + "\\" + "NowplayingTunes.exe";
+                    if (System.IO.File.Exists(myPath))
                     {
-                        MessageBox.Show("クリップボードに ツイート設定 をコピーしました。" + "\r\n" + "「なうぷれTunes」を起動してペーストして下さい。" + "\r\n" + "\r\n"
-                            + "\r\n"
-                            + "※なうぷれTunes が起動中であれば、アプリ名から" + "\r\n" + "　ウィンドウを特定し、当アプリで編集したデータ" + "\r\n" + "　を自動でセットします。" + "\r\n" + "\r\n" +
-                            "　また当エディターアプリをなうぷれTunesと同じ" + "\r\n" + "　フォルダにいれると、当アプリ起動時になうぷれ" + "\r\n" + "　Tunesを起動できるランチャー機能があります。",
-                                            "通知",
-                                            MessageBoxButtons.OK);
-                    }
+                        System.Diagnostics.Process.Start(myPath);
 
-                    return "";
+                        //メッセージキューに現在あるWindowsメッセージをすべて処理する
+                        //System.Windows.Forms.Application.DoEvents();
+
+                        System.Threading.Thread.Sleep(1500);
+
+                        //Get a handle for the Calculator Application main window           
+                        hwnd = FindWindow(null, "なうぷれTunes");
+                    }
+                    else
+                    {
+                        if (myMode.Equals("SET"))
+                        {
+                            MessageBox.Show("クリップボードに ツイート設定 をコピーしました。" + "\r\n" 
+                                + "「なうぷれTunes」を起動してペーストして下さい。" + "\r\n" + "\r\n"
+                                + "\r\n"
+                                + "※なうぷれTunes が起動中であれば、アプリ名から" + "\r\n"
+                                + "　ウィンドウを特定し、当アプリで編集したデータ" + "\r\n"
+                                + "　を自動でセットします。" + "\r\n"
+                                + "\r\n"
+                                + "　また当エディターアプリをなうぷれTunesと同じ" + "\r\n" 
+                                + "　フォルダにいれると、当アプリ起動時になうぷれ" + "\r\n"
+                                + "　Tunesを起動できるランチャー機能があります。",
+                                                "通知",
+                                                MessageBoxButtons.OK);
+                        }
+
+                        return "";
+                    }
                 }
+
+            }
+
+            // http://oshiete.goo.ne.jp/qa/7220109.html
+
+            //メインウィンドウのハンドル取得
+            hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "");
+
+            //タブウィンドウのハンドル取得
+            hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "基本設定");
+
+            //フレームのハンドル取得
+            hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "ツイート設定");
+
+            //テキストボックスのハンドル取得
+            hwndChild = FindWindowEx(hwnd, IntPtr.Zero, null, "");
+
+
+            if (hwndChild == IntPtr.Zero)
+            {
+                //MessageBox.Show("対象オブジェクトが見つかりませんでした。",
+                //                    "警告",
+                //                    MessageBoxButtons.OK);          
+
+                return "";
+            }
+
+            if (myMode.Equals("GET"))
+            {
+
+                StringBuilder sb1 = new StringBuilder(1024);
+                SendMessage(hwndChild, WM_GETTEXT, (IntPtr)sb1.Capacity, sb1);
+
+                this.EditBOX.Text = sb1.ToString();
+                this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
+
+                //MessageBox.Show(sb1.ToString(),
+                //                    "テスト",
+                //                    MessageBoxButtons.OK);
+
+                return this.EditBOX.Text;
+            }
+            else if(myMode.Equals("SET"))
+            {
+                //hwnd = FindWindow(null, "なうぷれTunes");
+                //WakeupWindow(hwnd);
+
+                this.EditBOX.Text = this.EditBOX.Text.Replace("\r\n", "$NEWLINE");
+
+                StringBuilder sb2 = new StringBuilder(this.EditBOX.Text);
+                SendMessage(hwndChild, WM_SETTEXT, IntPtr.Zero, sb2);
+
+                return this.EditBOX.Text;
+            }else{
+                MessageBox.Show("プログラミングエラーです。引数にGETかSETを指定して下さい。",
+                                    "警告",
+                                    MessageBoxButtons.OK);
+                return "";
             }
 
         }
 
-        // http://oshiete.goo.ne.jp/qa/7220109.html
-
-        //メインウィンドウのハンドル取得
-        hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "");
-
-        //タブウィンドウのハンドル取得
-        hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "基本設定");
-
-        //フレームのハンドル取得
-        hwnd = FindWindowEx(hwnd, IntPtr.Zero, null, "ツイート設定");
-
-        //テキストボックスのハンドル取得
-        hwndChild = FindWindowEx(hwnd, IntPtr.Zero, null, "");
-
-
-        if (hwndChild == IntPtr.Zero)
+        private void TextBoxTweetText_MouseMove(object sender, MouseEventArgs e)
         {
-            //MessageBox.Show("対象オブジェクトが見つかりませんでした。",
-            //                    "警告",
-            //                    MessageBoxButtons.OK);          
-
-            return "";
+            LastSelectionStart = TextBoxTweetText.SelectionStart;
+            LastSelectionLength = TextBoxTweetText.SelectionLength;
         }
 
-        if (myMode.Equals("GET"))
+        private void TextBoxTweetText_KeyDown(object sender, KeyEventArgs e)
         {
 
-            StringBuilder sb1 = new StringBuilder(1024);
-            SendMessage(hwndChild, WM_GETTEXT, (IntPtr)sb1.Capacity, sb1);
+            LastSelectionStart = TextBoxTweetText.SelectionStart;
+            LastSelectionLength = TextBoxTweetText.SelectionLength;
 
-            this.EditBOX.Text = sb1.ToString();
-            this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
+            //どの修飾子キー(Shift、Ctrl、およびAlt)が押されているか
+            if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+            {
+                //Console.WriteLine("Shiftキーが押されています。");
 
-            //MessageBox.Show(sb1.ToString(),
-            //                    "テスト",
-            //                    MessageBoxButtons.OK);
+                if (e.KeyCode.Equals(Keys.D4))  //キーボードの＄は Shift + 4 , 数字の４は D4
+                {
+                    //Console.WriteLine(" $ が押されました");
 
-            return this.EditBOX.Text;
+                    UI.ReplaceTextList dialog = new UI.ReplaceTextList();
+                    dialog.Text;
+                    ContextMenu_Func(dialog.Text);
+                }
+            }
         }
-        else if(myMode.Equals("SET"))
+
+        public void ContextMenu_Func(String ReplaceTextListData)
         {
-            //hwnd = FindWindow(null, "なうぷれTunes");
-            //WakeupWindow(hwnd);
 
-            this.EditBOX.Text = this.EditBOX.Text.Replace("\r\n", "$NEWLINE");
+            ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
 
-            StringBuilder sb2 = new StringBuilder(this.EditBOX.Text);
-            SendMessage(hwndChild, WM_SETTEXT, IntPtr.Zero, sb2);
+            int t1;
+            string[] s1;
 
-            return this.EditBOX.Text;
-        }else{
-            MessageBox.Show("プログラミングエラーです。引数にGETかSETを指定して下さい。",
-                                "警告",
-                                MessageBoxButtons.OK);
-            return "";
+            //Regex.Splitで分割する
+            t1 = System.Environment.TickCount;
+            s1 = System.Text.RegularExpressions.Regex.Split(ReplaceTextListData, "\n");
+            t1 = System.Environment.TickCount - t1;
+
+            ContextMenuStrip cntmenu = new ContextMenuStrip();
+
+            for (int myIDX = 0; myIDX < s1.Length ; myIDX++)
+            {
+                if (!s1[myIDX].Equals(""))
+                {
+                    ToolStripMenuItem newcontitem = new ToolStripMenuItem();
+                    newcontitem.Text = s1[myIDX];
+                    newcontitem.Click += delegate
+                    {
+                        String ReplaceText = newcontitem.Text;
+
+                        ReplaceText = ReplaceText.Substring(0, ReplaceText.IndexOf(" - ", 0));
+
+                        TextBoxTweetText.Focus();
+
+                        string TextBoxStr = TextBoxTweetText.Text;
+                        TextBoxTweetText.Text = TextBoxStr.Substring(0, LastSelectionStart) +
+                            TextBoxStr.Substring(LastSelectionStart + LastSelectionLength,
+                            TextBoxStr.Length - (LastSelectionStart + LastSelectionLength)); //選択状態にある文字を削除
+
+                        TextBoxStr = TextBoxTweetText.Text;
+
+                        TextBoxTweetText.Text = TextBoxStr.Insert(LastSelectionStart, ReplaceText);
+
+                        LastSelectionStart = LastSelectionStart + ReplaceText.Length;  //連続して挿入する場合を考慮
+                        LastSelectionLength = 0; //挿入後 初期化
+
+                        TextBoxTweetText.Focus();
+                        TextBoxTweetText.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
+                        TextBoxTweetText.ScrollToCaret(); //現在入力中の位置にスクロール
+
+                        //InsertStrIntoComboBox(ReplaceText); //ユーザー関数
+                    };
+                    cntmenu.Items.Add(newcontitem);
+                }
+            }
+
+            ////▼メインフォーム右に張り付くようにメニューを表示▼
+            //Point p = Point.Empty;
+
+            //form_p.X = this.Left + this.Width;
+            //form_p.Y = this.Top;
+            //cntmenu.Show(form_p);
+
+
+
+            ////▼マウスカーソルの位置にメニューを表示▼
+            //Point mp = Control.MousePosition;  //マウスカーソルの位置を画面座標で取得
+
+            ////ContextMenuを表示しているコントロールのクライアント座標に変換
+            //Point cp = cntmenu.PointToClient(mp);
+
+            //cntmenu.Show(cp);
+
+
+
+            ////▼＄が押された右下にメニューを表示▼
+            Point text_p = Point.Empty;
+            GetCaretPos(out text_p);
+
+            //ContextMenuを表示しているコントロールのスクリーン座標に変換
+            text_p = TextBoxTweetText.PointToScreen(text_p);
+            text_p.Y += 20;
+
+            cntmenu.Show(text_p);
         }
 
-   }
-
-         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-         static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-         [DllImport("user32.dll", SetLastError = true)]
-         static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-         static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr ptr, StringBuilder lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr ptr, StringBuilder lParam);
 
 
-         // 外部プロセスのウィンドウを起動する
-         public static void WakeupWindow(IntPtr hWnd)
-         {
+        // 外部プロセスのウィンドウを起動する
+        public static void WakeupWindow(IntPtr hWnd)
+        {
              // メイン・ウィンドウが最小化されていれば元に戻す
              if (IsIconic(hWnd))
              {
@@ -842,6 +994,15 @@ namespace TYPE_C_NowplayingEditor
          // ShowWindowAsync関数のパラメータに渡す定義値
          private const int SW_RESTORE = 9;  // 画面を元の大きさに戻す
 
+
+         [DllImport("user32.dll")]
+         private extern static int GetCaretPos(out Point p);
+         //[DllImport("user32.dll")]
+         //private extern static int SetCaretPos(int x, int y);
+         //[DllImport("user32.dll")]
+         //private extern static bool ShowCaret(IntPtr hwnd);
+         //[DllImport("user32.dll")]
+         //private extern static int CreateCaret(IntPtr hwnd, IntPtr hBitmap, int width, int height);
     }
 
 }

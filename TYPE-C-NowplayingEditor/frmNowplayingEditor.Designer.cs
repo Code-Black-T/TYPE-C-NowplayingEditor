@@ -30,6 +30,7 @@
         {
             this.ButtonUNDO = new System.Windows.Forms.Button();
             this.GroupBox2 = new System.Windows.Forms.GroupBox();
+            this.EditBOX = new System.Windows.Forms.TextBox();
             this.rButton17 = new System.Windows.Forms.Button();
             this.rButton16 = new System.Windows.Forms.Button();
             this.rButton1 = new System.Windows.Forms.Button();
@@ -47,9 +48,10 @@
             this.rButton10 = new System.Windows.Forms.Button();
             this.rButton11 = new System.Windows.Forms.Button();
             this.rButton13 = new System.Windows.Forms.Button();
-            this.rButton19 = new System.Windows.Forms.Button();
             this.rButton20 = new System.Windows.Forms.Button();
+            this.rButton19 = new System.Windows.Forms.Button();
             this.rButton18 = new System.Windows.Forms.Button();
+            this.rButton35 = new System.Windows.Forms.Button();
             this.rButton34 = new System.Windows.Forms.Button();
             this.rButton33 = new System.Windows.Forms.Button();
             this.rButton32 = new System.Windows.Forms.Button();
@@ -64,7 +66,6 @@
             this.rButton23 = new System.Windows.Forms.Button();
             this.rButton22 = new System.Windows.Forms.Button();
             this.rButton21 = new System.Windows.Forms.Button();
-            this.EditBOX = new System.Windows.Forms.TextBox();
             this.ComboBoxEditStr = new System.Windows.Forms.ComboBox();
             this.Label2 = new System.Windows.Forms.Label();
             this.ButtonClear = new System.Windows.Forms.Button();
@@ -72,7 +73,6 @@
             this.ButtonDefault = new System.Windows.Forms.Button();
             this.ButtonSet = new System.Windows.Forms.Button();
             this.ButtonQuit = new System.Windows.Forms.Button();
-            this.rButton35 = new System.Windows.Forms.Button();
             this.GroupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,6 +89,7 @@
             // 
             // GroupBox2
             // 
+            this.GroupBox2.Controls.Add(this.EditBOX);
             this.GroupBox2.Controls.Add(this.rButton17);
             this.GroupBox2.Controls.Add(this.rButton16);
             this.GroupBox2.Controls.Add(this.rButton1);
@@ -124,7 +125,6 @@
             this.GroupBox2.Controls.Add(this.rButton23);
             this.GroupBox2.Controls.Add(this.rButton22);
             this.GroupBox2.Controls.Add(this.rButton21);
-            this.GroupBox2.Controls.Add(this.EditBOX);
             this.GroupBox2.Controls.Add(this.ComboBoxEditStr);
             this.GroupBox2.Controls.Add(this.Label2);
             this.GroupBox2.Location = new System.Drawing.Point(14, 8);
@@ -135,6 +135,18 @@
             this.GroupBox2.TabIndex = 16;
             this.GroupBox2.TabStop = false;
             this.GroupBox2.Text = "ツイート設定";
+            // 
+            // EditBOX
+            // 
+            this.EditBOX.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditBOX.Location = new System.Drawing.Point(14, 38);
+            this.EditBOX.Multiline = true;
+            this.EditBOX.Name = "EditBOX";
+            this.EditBOX.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.EditBOX.Size = new System.Drawing.Size(865, 76);
+            this.EditBOX.TabIndex = 1;
+            this.EditBOX.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EditBOX_KeyDown);
+            this.EditBOX.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EditBOX_MouseMove);
             // 
             // rButton17
             // 
@@ -340,18 +352,6 @@
             this.rButton13.Text = "]";
             this.rButton13.UseVisualStyleBackColor = true;
             // 
-            // rButton19
-            // 
-            this.rButton19.AutoSize = true;
-            this.rButton19.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rButton19.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton19.Location = new System.Drawing.Point(436, 305);
-            this.rButton19.Name = "rButton19";
-            this.rButton19.Size = new System.Drawing.Size(197, 30);
-            this.rButton19.TabIndex = 91;
-            this.rButton19.Text = "#NowPlaying";
-            this.rButton19.UseVisualStyleBackColor = true;
-            // 
             // rButton20
             // 
             this.rButton20.AutoSize = true;
@@ -364,6 +364,18 @@
             this.rButton20.Text = "#なうぷれ";
             this.rButton20.UseVisualStyleBackColor = true;
             // 
+            // rButton19
+            // 
+            this.rButton19.AutoSize = true;
+            this.rButton19.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rButton19.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.rButton19.Location = new System.Drawing.Point(436, 305);
+            this.rButton19.Name = "rButton19";
+            this.rButton19.Size = new System.Drawing.Size(197, 30);
+            this.rButton19.TabIndex = 91;
+            this.rButton19.Text = "#NowPlaying";
+            this.rButton19.UseVisualStyleBackColor = true;
+            // 
             // rButton18
             // 
             this.rButton18.AutoSize = true;
@@ -375,6 +387,18 @@
             this.rButton18.TabIndex = 90;
             this.rButton18.Text = "#nowplaying";
             this.rButton18.UseVisualStyleBackColor = true;
+            // 
+            // rButton35
+            // 
+            this.rButton35.AutoSize = true;
+            this.rButton35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rButton35.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.rButton35.Location = new System.Drawing.Point(14, 305);
+            this.rButton35.Name = "rButton35";
+            this.rButton35.Size = new System.Drawing.Size(234, 30);
+            this.rButton35.TabIndex = 64;
+            this.rButton35.Text = "$NEWLINE 改行";
+            this.rButton35.UseVisualStyleBackColor = true;
             // 
             // rButton34
             // 
@@ -544,18 +568,6 @@
             this.rButton21.Text = "$TITLE 曲名";
             this.rButton21.UseVisualStyleBackColor = true;
             // 
-            // EditBOX
-            // 
-            this.EditBOX.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditBOX.Location = new System.Drawing.Point(14, 46);
-            this.EditBOX.Multiline = true;
-            this.EditBOX.Name = "EditBOX";
-            this.EditBOX.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.EditBOX.Size = new System.Drawing.Size(864, 76);
-            this.EditBOX.TabIndex = 1;
-            this.EditBOX.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EditBOX_KeyDown);
-            this.EditBOX.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EditBOX_MouseMove);
-            // 
             // ComboBoxEditStr
             // 
             this.ComboBoxEditStr.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -634,18 +646,6 @@
             this.ButtonQuit.Text = "キャンセル (&C)";
             this.ButtonQuit.UseVisualStyleBackColor = true;
             this.ButtonQuit.Click += new System.EventHandler(this.ButtonQuit_Click);
-            // 
-            // rButton35
-            // 
-            this.rButton35.AutoSize = true;
-            this.rButton35.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rButton35.Font = new System.Drawing.Font("MS UI Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.rButton35.Location = new System.Drawing.Point(14, 305);
-            this.rButton35.Name = "rButton35";
-            this.rButton35.Size = new System.Drawing.Size(234, 30);
-            this.rButton35.TabIndex = 64;
-            this.rButton35.Text = "$NEWLINE 改行";
-            this.rButton35.UseVisualStyleBackColor = true;
             // 
             // frmNowplayingEditor
             // 

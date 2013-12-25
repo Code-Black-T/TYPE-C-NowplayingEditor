@@ -1,0 +1,4 @@
+NowplayingEditor.exe を右クリックして、対象を保存しても exe は動きません。
+画面右下の「Download ZIP」でダウンロードして下さい。
+
+4:16 2013/12/26
