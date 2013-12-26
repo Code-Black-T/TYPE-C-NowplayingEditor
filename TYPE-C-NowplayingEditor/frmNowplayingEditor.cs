@@ -100,7 +100,7 @@ namespace TYPE_C_NowplayingEditor
             //tweettextFromMainToEditor = 「メインウィンドウ」の TextBox.text
             //tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
 
-            tweettextFromMainToEditor = GetOrSetText("GET");
+            tweettextFromMainToEditor = GetOrSetTextForNowplayingTunes("GET");
 
             this.EditBOX.Text = tweettextFromMainToEditor; //「メインウィンドウ」側から、「ツイートする文字の設定」を読み込む
             this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
@@ -471,7 +471,7 @@ namespace TYPE_C_NowplayingEditor
                 //クリップボードに文字列をコピーする
                 Clipboard.SetText(tweettextFromEditorToMain);
 
-                GetOrSetText("SET");
+                GetOrSetTextForNowplayingTunes("SET");
 
                 // http://www.itlab51.com/?page_id=46
                 int myIDX = (this.ComboBoxEditStr.Items.IndexOf(ComboStr));
@@ -586,6 +586,11 @@ namespace TYPE_C_NowplayingEditor
                 if (e.KeyCode.Equals(Keys.D4))  //キーボードの＄は Shift + 4 , 数字の４は D4
                 {
                     //Console.WriteLine(" $ が押されました");
+
+                    //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
+                    InsertStrIntoComboBox("$");
+
+                    //InsertStrIntoTextBoxTweetText("$", EditBOX);
 
                     string ReplaceTextListData =
 
@@ -727,7 +732,7 @@ namespace TYPE_C_NowplayingEditor
             }
         }
 
-        private string GetOrSetText(String myMode)
+        private string GetOrSetTextForNowplayingTunes(String myMode)
         {
             IntPtr hwnd = IntPtr.Zero;
             IntPtr hwndChild = IntPtr.Zero;
@@ -756,6 +761,7 @@ namespace TYPE_C_NowplayingEditor
 
                     //Get a handle for the Calculator Application main window           
                     hwnd = FindWindow(null, "なうぷれTunes");
+
                 }
                 else
                 {
@@ -794,6 +800,18 @@ namespace TYPE_C_NowplayingEditor
                     }
                 }
 
+            }
+
+
+            IntPtr iTunesHwnd = IntPtr.Zero;
+            iTunesHwnd = FindWindow(null, "iTunes");
+
+            if (iTunesHwnd == IntPtr.Zero) //iTunesが起動されていない場合（かつ、なうぷれTunesが起動されている場合）
+            {
+                if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
+                {
+                    System.Diagnostics.Process.Start("C:\\Program Files (x86)\\iTunes\\iTunes.exe"); //iTunesを起動
+                }
             }
 
             // http://oshiete.goo.ne.jp/qa/7220109.html
@@ -876,6 +894,9 @@ namespace TYPE_C_NowplayingEditor
                 {
                     //Console.WriteLine(" $ が押されました");
 
+                    //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
+                    InsertStrIntoTextBoxTweetText("$",TextBoxTweetText); //ユーザー関数
+
                     UI.ReplaceTextList dialog = new UI.ReplaceTextList();
                     dialog.Text;
                     ContextMenu_Func(dialog.Text);
@@ -883,6 +904,27 @@ namespace TYPE_C_NowplayingEditor
             }
         }
 
+
+        private void InsertStrIntoTextBoxTweetText(string ReplaceText, TextBox objTextBox)
+        {
+            objTextBox.Focus();
+
+            string TextBoxStr = objTextBox.Text;
+            objTextBox.Text = TextBoxStr.Substring(0, LastSelectionStart) +
+                TextBoxStr.Substring(LastSelectionStart + LastSelectionLength,
+                TextBoxStr.Length - (LastSelectionStart + LastSelectionLength)); //選択状態にある文字を削除
+
+            TextBoxStr = objTextBox.Text;
+
+            objTextBox.Text = TextBoxStr.Insert(LastSelectionStart, ReplaceText);
+
+            LastSelectionStart = LastSelectionStart + ReplaceText.Length;  //連続して挿入する場合を考慮
+            LastSelectionLength = 0; //挿入後 初期化
+
+            objTextBox.Focus();
+            objTextBox.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
+            objTextBox.ScrollToCaret(); //現在入力中の位置にスクロール
+        }
         public void ContextMenu_Func(String ReplaceTextListData)
         {
 
@@ -908,26 +950,10 @@ namespace TYPE_C_NowplayingEditor
                     {
                         String ReplaceText = newcontitem.Text;
 
-                        ReplaceText = ReplaceText.Substring(0, ReplaceText.IndexOf(" - ", 0));
+                        //挿入した「$」をスキップして、２文字目から「 - 」までの文字を挿入
+                        ReplaceText = ReplaceText.Substring( 1, ReplaceText.IndexOf(" - ", 0) - 1 );
 
-                        TextBoxTweetText.Focus();
-
-                        string TextBoxStr = TextBoxTweetText.Text;
-                        TextBoxTweetText.Text = TextBoxStr.Substring(0, LastSelectionStart) +
-                            TextBoxStr.Substring(LastSelectionStart + LastSelectionLength,
-                            TextBoxStr.Length - (LastSelectionStart + LastSelectionLength)); //選択状態にある文字を削除
-
-                        TextBoxStr = TextBoxTweetText.Text;
-
-                        TextBoxTweetText.Text = TextBoxStr.Insert(LastSelectionStart, ReplaceText);
-
-                        LastSelectionStart = LastSelectionStart + ReplaceText.Length;  //連続して挿入する場合を考慮
-                        LastSelectionLength = 0; //挿入後 初期化
-
-                        TextBoxTweetText.Focus();
-                        TextBoxTweetText.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
-                        TextBoxTweetText.ScrollToCaret(); //現在入力中の位置にスクロール
-
+                        InsertStrIntoTextBoxTweetText(ReplaceText, TextBoxTweetText); //ユーザー関数
                         //InsertStrIntoComboBox(ReplaceText); //ユーザー関数
                     };
                     cntmenu.Items.Add(newcontitem);
@@ -935,7 +961,7 @@ namespace TYPE_C_NowplayingEditor
             }
 
             ////▼メインフォーム右に張り付くようにメニューを表示▼
-            //Point p = Point.Empty;
+            //Point form_p = Point.Empty;
 
             //form_p.X = this.Left + this.Width;
             //form_p.Y = this.Top;
@@ -946,10 +972,13 @@ namespace TYPE_C_NowplayingEditor
             ////▼マウスカーソルの位置にメニューを表示▼
             //Point mp = Control.MousePosition;  //マウスカーソルの位置を画面座標で取得
 
-            ////ContextMenuを表示しているコントロールのクライアント座標に変換
+            ////ContextMenuを表示しているコントロールの「クライアント」座標に変換
             //Point cp = cntmenu.PointToClient(mp);
 
             //cntmenu.Show(cp);
+
+            ////右クリックメニュー に、既存の「コピー」「切り取り」「貼り付け」「元に戻す」「削除」に自作メニューを追加
+            //http://d.hatena.ne.jp/kabacsharp/20131006/1381046053
 
 
 
@@ -957,9 +986,18 @@ namespace TYPE_C_NowplayingEditor
             Point text_p = Point.Empty;
             GetCaretPos(out text_p);
 
-            //ContextMenuを表示しているコントロールのスクリーン座標に変換
+            //ContextMenuを表示しているコントロールの「スクリーン」座標に変換
             text_p = TextBoxTweetText.PointToScreen(text_p);
             text_p.Y += 20;
+
+
+            ////////////////▼＄が押された右下にメニューを表示▼
+            ////////////Point text_p = Point.Empty;
+            ////////////GetCaretPos(out text_p);
+
+            //////////////ContextMenuを表示しているコントロールの「スクリーン」座標に変換
+            ////////////text_p = this.EditBOX.PointToScreen(text_p);
+            ////////////text_p.Y += 20;
 
             cntmenu.Show(text_p);
         }
