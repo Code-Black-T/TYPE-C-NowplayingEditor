@@ -43,6 +43,9 @@ namespace TYPE_C_NowplayingEditor
         private void frmNowplayingEditor_Load(object sender, EventArgs e)
         {
 
+            ContextMenu_RCLK_Func(■TextBoxTweetText);  //引数に渡したテキストボックス内での右クリックメニューを定義
+            //////////////ContextMenu_RCLK_Func(this.EditBOX);  //引数に渡したテキストボックスの右クリックメニューをセット
+
             // http://dobon.net/vb/dotnet/control/buttonarray.html
             // http://social.msdn.microsoft.com/Forums/ja-JP/csharpgeneralja/thread/29b6239c-c672-4592-9b03-3784ad366b8c/
 
@@ -165,7 +168,7 @@ namespace TYPE_C_NowplayingEditor
                     tempStr = " ";
                 }
 
-                InsertStrIntoComboBox(tempStr);
+                InsertStrIntoTextBox_EditBOX(tempStr);
             }else{  //通常の置き換え文字挿入
 
                 string tempStr;
@@ -184,7 +187,7 @@ namespace TYPE_C_NowplayingEditor
                     }
                 }
 
-                InsertStrIntoComboBox(tempStr);
+                InsertStrIntoTextBox_EditBOX(tempStr);
             }
         }
 
@@ -314,7 +317,7 @@ namespace TYPE_C_NowplayingEditor
             WS.Close();
         }
 
-        private void InsertStrIntoComboBox(string str)
+        private void InsertStrIntoTextBox_EditBOX(string str)
         {
             TextBoxKeepStr = this.EditBOX.Text;
 
@@ -588,33 +591,31 @@ namespace TYPE_C_NowplayingEditor
                     //Console.WriteLine(" $ が押されました");
 
                     //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
-                    InsertStrIntoComboBox("$");
+                    ////////////InsertStrIntoTextBox_EditBOX("$");
+                    ////////////InsertStrIntoTextBox_Func("$", TextBoxTweetText);
 
-                    //InsertStrIntoTextBoxTweetText("$", EditBOX);
+                    ////////////string ReplaceTextListData =
 
-                    string ReplaceTextListData =
+                    ////////////"$TITLE - 曲名" + "\r\n" +
+                    ////////////"$ARTIST - アーティスト名" + "\r\n" +
+                    ////////////"$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
+                    ////////////"$ALBUMNAME - アルバム名" + "\r\n" +
+                    ////////////"$COMMENT - コメント" + "\r\n" +
+                    ////////////"$COMPOSER - 作曲家" + "\r\n" +
+                    ////////////"$DISCCOUNT - ディスク枚数" + "\r\n" +
+                    ////////////"$DISCNUMBER - ディスクナンバー" + "\r\n" +
+                    ////////////"$GENRE - ジャンル" + "\r\n" +
+                    ////////////"$LASTPLAYED - 最後に再生した日付" + "\r\n" +
+                    ////////////"$PLAYEDTIMES - 再生回数" + "\r\n" +
+                    ////////////"$RATING - 評価" + "\r\n" +
+                    ////////////"$TRACKNUMBER - トラックナンバー" + "\r\n" +
+                    ////////////"$YEAR - リリース年" + "\r\n" +
+                    ////////////"$NEWLINE - 改行" + "\r\n";
 
-                    "$TITLE - 曲名" + "\r\n" +
-                    "$ARTIST - アーティスト名" + "\r\n" +
-                    "$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
-                    "$ALBUMNAME - アルバム名" + "\r\n" +
-                    "$COMMENT - コメント" + "\r\n" +
-                    "$COMPOSER - 作曲家" + "\r\n" +
-                    "$DISCCOUNT - ディスク枚数" + "\r\n" +
-                    "$DISCNUMBER - ディスクナンバー" + "\r\n" +
-                    "$GENRE - ジャンル" + "\r\n" +
-                    "$LASTPLAYED - 最後に再生した日付" + "\r\n" +
-                    "$PLAYEDTIMES - 再生回数" + "\r\n" +
-                    "$RATING - 評価" + "\r\n" +
-                    "$TRACKNUMBER - トラックナンバー" + "\r\n" +
-                    "$YEAR - リリース年" + "\r\n" +
-                    "$NEWLINE - 改行" + "\r\n";
+                    ////////////ContextMenu_Func(ReplaceTextListData);
 
-                    ContextMenu_Func(ReplaceTextListData);
-
-                    //UI.ReplaceTextList dialog = new UI.ReplaceTextList();
-                    //dialog.Text;
-                    //ContextMenu_Func(dialog.Text);
+                    UI.ReplaceTextList dialog = new UI.ReplaceTextList();
+                    ContextMenu_Func(dialog.Text);
 
                 }
             }
@@ -873,17 +874,17 @@ namespace TYPE_C_NowplayingEditor
 
         }
 
-        private void TextBoxTweetText_MouseMove(object sender, MouseEventArgs e)
+        private void ■TextBoxTweetText_MouseMove(object sender, MouseEventArgs e)
         {
-            LastSelectionStart = TextBoxTweetText.SelectionStart;
-            LastSelectionLength = TextBoxTweetText.SelectionLength;
+            LastSelectionStart = ■TextBoxTweetText.SelectionStart;
+            LastSelectionLength = ■TextBoxTweetText.SelectionLength;
         }
 
-        private void TextBoxTweetText_KeyDown(object sender, KeyEventArgs e)
+        private void ■TextBoxTweetText_KeyDown(object sender, KeyEventArgs e)
         {
 
-            LastSelectionStart = TextBoxTweetText.SelectionStart;
-            LastSelectionLength = TextBoxTweetText.SelectionLength;
+            LastSelectionStart = ■TextBoxTweetText.SelectionStart;
+            LastSelectionLength = ■TextBoxTweetText.SelectionLength;
 
             //どの修飾子キー(Shift、Ctrl、およびAlt)が押されているか
             if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
@@ -895,17 +896,16 @@ namespace TYPE_C_NowplayingEditor
                     //Console.WriteLine(" $ が押されました");
 
                     //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
-                    InsertStrIntoTextBoxTweetText("$",TextBoxTweetText); //ユーザー関数
+                    InsertStrIntoTextBox_Func("$",■TextBoxTweetText); //ユーザー関数
 
                     UI.ReplaceTextList dialog = new UI.ReplaceTextList();
-                    dialog.Text;
                     ContextMenu_Func(dialog.Text);
                 }
             }
         }
 
 
-        private void InsertStrIntoTextBoxTweetText(string ReplaceText, TextBox objTextBox)
+        private void InsertStrIntoTextBox_Func(string ReplaceText, TextBox objTextBox)
         {
             objTextBox.Focus();
 
@@ -925,7 +925,8 @@ namespace TYPE_C_NowplayingEditor
             objTextBox.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
             objTextBox.ScrollToCaret(); //現在入力中の位置にスクロール
         }
-        public void ContextMenu_Func(String ReplaceTextListData)
+
+        public void ContextMenu_Func(String ReplaceTextListData)  //「＄」が押されたときに出すメニューを生成
         {
 
             ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
@@ -953,8 +954,9 @@ namespace TYPE_C_NowplayingEditor
                         //挿入した「$」をスキップして、２文字目から「 - 」までの文字を挿入
                         ReplaceText = ReplaceText.Substring( 1, ReplaceText.IndexOf(" - ", 0) - 1 );
 
-                        InsertStrIntoTextBoxTweetText(ReplaceText, TextBoxTweetText); //ユーザー関数
-                        //InsertStrIntoComboBox(ReplaceText); //ユーザー関数
+                        InsertStrIntoTextBox_Func(ReplaceText, ■TextBoxTweetText); //ユーザー関数
+
+                        ////////////InsertStrIntoTextBox_EditBOX(ReplaceText); //ユーザー関数
                     };
                     cntmenu.Items.Add(newcontitem);
                 }
@@ -977,18 +979,17 @@ namespace TYPE_C_NowplayingEditor
 
             //cntmenu.Show(cp);
 
-            ////右クリックメニュー に、既存の「コピー」「切り取り」「貼り付け」「元に戻す」「削除」に自作メニューを追加
-            //http://d.hatena.ne.jp/kabacsharp/20131006/1381046053
-
-
 
             ////▼＄が押された右下にメニューを表示▼
             Point text_p = Point.Empty;
             GetCaretPos(out text_p);
 
             //ContextMenuを表示しているコントロールの「スクリーン」座標に変換
-            text_p = TextBoxTweetText.PointToScreen(text_p);
+            text_p = ■TextBoxTweetText.PointToScreen(text_p);
             text_p.Y += 20;
+
+            cntmenu.Show(text_p);
+
 
 
             ////////////////▼＄が押された右下にメニューを表示▼
@@ -999,7 +1000,140 @@ namespace TYPE_C_NowplayingEditor
             ////////////text_p = this.EditBOX.PointToScreen(text_p);
             ////////////text_p.Y += 20;
 
-            cntmenu.Show(text_p);
+            ////////////cntmenu.Show(text_p);
+        }
+
+        public ContextMenuStrip ContextMenu_RCLK_Func(TextBox objTextBox)  //右クリックしたときに出すメニューを生成 　//form_loadでコール
+        {
+
+            ////右クリックメニュー に、既存の「コピー」「切り取り」「貼り付け」「元に戻す」「削除」に自作メニューを追加
+            //http://d.hatena.ne.jp/kabacsharp/20131006/1381046053
+
+            ContextMenuStrip cntmenu = new ContextMenuStrip();
+            
+            //Copy
+            ToolStripMenuItem mCopy = new ToolStripMenuItem();
+            mCopy.Text = "コピー(&C)";
+            mCopy.Click += delegate
+            {
+                if (!string.IsNullOrEmpty(objTextBox.SelectedText))
+                {
+                    Clipboard.SetText(objTextBox.SelectedText);
+                }
+                else if (!string.IsNullOrEmpty(objTextBox.Text))
+                {
+                    Clipboard.SetText(objTextBox.Text);
+                }
+            };
+            cntmenu.Items.Add(mCopy);
+
+            //Cut
+            ToolStripMenuItem mCut = new ToolStripMenuItem();
+            mCut.Text = "切り取り(&X)";
+            mCut.Click += delegate
+            {
+                if (!string.IsNullOrEmpty(objTextBox.SelectedText))
+                {
+                    Clipboard.SetText(objTextBox.SelectedText);
+                    objTextBox.SelectedText = "";
+                }
+                else if (!string.IsNullOrEmpty(objTextBox.Text))
+                {
+                    Clipboard.SetText(objTextBox.Text);
+                    objTextBox.Text = "";
+                }
+            };
+            cntmenu.Items.Add(mCut);
+
+            //Paste
+            ToolStripMenuItem mPaste = new ToolStripMenuItem();
+            mPaste.Text = "貼り付け(&V)";
+            mPaste.Click += delegate
+            {
+                //if (!string.IsNullOrEmpty(objTextBox.SelectedText))
+                //{
+                //    objTextBox.SelectedText = Clipboard.GetText();
+                //}
+                //else
+                //{
+                //    objTextBox.Text = Clipboard.GetText();
+                //}
+                InsertStrIntoTextBox_Func(Clipboard.GetText(), objTextBox);  //ユーザー関数
+            };
+            cntmenu.Items.Add(mPaste);
+
+            ToolStripSeparator itemSeparator = new ToolStripSeparator();    //セパレータの作成
+            cntmenu.Items.Add(itemSeparator);
+
+            ////////////string ReplaceTextListData =
+
+            ////////////        "$TITLE - 曲名" + "\r\n" +
+            ////////////        "$ARTIST - アーティスト名" + "\r\n" +
+            ////////////        "$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
+            ////////////        "$ALBUMNAME - アルバム名" + "\r\n" +
+            ////////////        "$COMMENT - コメント" + "\r\n" +
+            ////////////        "$COMPOSER - 作曲家" + "\r\n" +
+            ////////////        "$DISCCOUNT - ディスク枚数" + "\r\n" +
+            ////////////        "$DISCNUMBER - ディスクナンバー" + "\r\n" +
+            ////////////        "$GENRE - ジャンル" + "\r\n" +
+            ////////////        "$LASTPLAYED - 最後に再生した日付" + "\r\n" +
+            ////////////        "$PLAYEDTIMES - 再生回数" + "\r\n" +
+            ////////////        "$RATING - 評価" + "\r\n" +
+            ////////////        "$TRACKNUMBER - トラックナンバー" + "\r\n" +
+            ////////////        "$YEAR - リリース年" + "\r\n" +
+            ////////////        "$NEWLINE - 改行" + "\r\n";
+
+            string ReplaceTextListData = "";
+
+            UI.ReplaceTextList dialog = new UI.ReplaceTextList();
+            ReplaceTextListData = dialog.Text;
+
+            
+            ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
+
+            int t1;
+            string[] s1;
+
+            //Regex.Splitで分割する
+            t1 = System.Environment.TickCount;
+            s1 = System.Text.RegularExpressions.Regex.Split(ReplaceTextListData, "\n");
+            t1 = System.Environment.TickCount - t1;
+
+            for (int myIDX = 0; myIDX < s1.Length; myIDX++)
+            {
+                if (!s1[myIDX].Equals(""))
+                {
+                    ToolStripMenuItem newcontitem = new ToolStripMenuItem();
+                    newcontitem.Text = s1[myIDX];
+                    newcontitem.Click += delegate
+                    {
+                        String ReplaceText = newcontitem.Text;
+
+                        //【×】挿入した「$」をスキップして、２文字目から「 - 」までの文字を挿入
+                        //【○】右クリックでは「$」は挿入されないので、スキップしない
+                        ReplaceText = ReplaceText.Substring(0, ReplaceText.IndexOf(" - ", 0));
+
+                        InsertStrIntoTextBox_Func(ReplaceText, ■TextBoxTweetText);  //ユーザー関数
+
+                        ////////////InsertStrIntoTextBox_EditBOX(ReplaceText);  //ユーザー関数
+                    };
+                    cntmenu.Items.Add(newcontitem);
+                }
+            }
+
+            objTextBox.ContextMenuStrip = cntmenu;  //objTextBoxの右クリックメニューをオーバーライドして、規定のメニューにする
+
+            return cntmenu;
+
+
+            ////▼マウスカーソルの位置にメニューを表示▼
+            //Point mp = Control.MousePosition;  //マウスカーソルの位置を画面座標で取得
+
+            ////ContextMenuを表示しているコントロールの「クライアント」座標に変換
+            //Point cp = cntmenu.PointToClient(mp);
+
+            //cntmenu.Show(cp);
+
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
