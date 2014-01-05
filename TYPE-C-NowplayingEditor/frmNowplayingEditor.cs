@@ -31,8 +31,8 @@ namespace TYPE_C_NowplayingEditor
 
         ToolTip ToolTip1;
 
-        int LastSelectionStart;
-        int LastSelectionLength;
+        ■int LastSelectionStart;
+        ■int LastSelectionLength;
 
         string TextBoxKeepStr; //ＯＫボタンを押す前のデータを退避
 
@@ -319,7 +319,10 @@ namespace TYPE_C_NowplayingEditor
 
         private void InsertStrIntoTextBox_EditBOX(string str)
         {
-            TextBoxKeepStr = this.EditBOX.Text;
+            if (!str.Equals("$"))  //タイプした文字が＄だった時、置き換え文字の一文字目と見なして、UNDO用変数に退避しない
+            {
+                TextBoxKeepStr = this.EditBOX.Text;
+            }
 
             string TextBoxStr;
             TextBoxStr = this.EditBOX.Text;
@@ -614,8 +617,8 @@ namespace TYPE_C_NowplayingEditor
 
                     ////////////ContextMenu_Func(ReplaceTextListData);
 
-                    UI.ReplaceTextList dialog = new UI.ReplaceTextList();
-                    ContextMenu_Func(dialog.Text);
+                    ////////////UI.ReplaceTextList dialog = new UI.ReplaceTextList();
+                    ////////////ContextMenu_Func(dialog.Text);
 
                 }
             }
@@ -905,7 +908,7 @@ namespace TYPE_C_NowplayingEditor
         }
 
 
-        private void InsertStrIntoTextBox_Func(string ReplaceText, TextBox objTextBox)
+        ■private void InsertStrIntoTextBox_Func(string ReplaceText, TextBox objTextBox)
         {
             objTextBox.Focus();
 
@@ -926,7 +929,7 @@ namespace TYPE_C_NowplayingEditor
             objTextBox.ScrollToCaret(); //現在入力中の位置にスクロール
         }
 
-        public void ContextMenu_Func(String ReplaceTextListData)  //「＄」が押されたときに出すメニューを生成
+        ■public void ContextMenu_Func(String ReplaceTextListData)  //「＄」が押されたときに出すメニューを生成
         {
 
             ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
@@ -1003,7 +1006,8 @@ namespace TYPE_C_NowplayingEditor
             ////////////cntmenu.Show(text_p);
         }
 
-        public ContextMenuStrip ContextMenu_RCLK_Func(TextBox objTextBox)  //右クリックしたときに出すメニューを生成 　//form_loadでコール
+        ■public ContextMenuStrip ContextMenu_RCLK_Func(TextBox objTextBox)  //右クリックしたときに出すメニューを生成
+                                                                                //form_loadでコール
         {
 
             ////右クリックメニュー に、既存の「コピー」「切り取り」「貼り付け」「元に戻す」「削除」に自作メニューを追加
@@ -1167,8 +1171,8 @@ namespace TYPE_C_NowplayingEditor
          private const int SW_RESTORE = 9;  // 画面を元の大きさに戻す
 
 
-         [DllImport("user32.dll")]
-         private extern static int GetCaretPos(out Point p);
+         ■[DllImport("user32.dll")]
+         ■private extern static int GetCaretPos(out Point p);
          //[DllImport("user32.dll")]
          //private extern static int SetCaretPos(int x, int y);
          //[DllImport("user32.dll")]
