@@ -522,16 +522,19 @@ namespace TYPE_C_NowplayingEditor
 
         private void ButtonUNDO_Click(object sender, EventArgs e)
         {
-            string workStr = this.EditBOX.Text;  // REDO用 退避変数
-            this.EditBOX.Text = TextBoxKeepStr;
-            TextBoxKeepStr = workStr;
+            if (this.EditBOX.Text != TextBoxKeepStr)
+            {
+                string workStr = this.EditBOX.Text;  // REDO用 退避変数
+                this.EditBOX.Text = TextBoxKeepStr;
+                TextBoxKeepStr = workStr;
 
-            LastSelectionStart = this.EditBOX.Text.Length; //UNDO・REDO後 初期化
-            LastSelectionLength = 0; //UNDO・REDO後 初期化
+                LastSelectionStart = this.EditBOX.Text.Length; //UNDO・REDO後 初期化
+                LastSelectionLength = 0; //UNDO・REDO後 初期化
 
-            this.EditBOX.Focus();
-            this.EditBOX.Select( LastSelectionStart, LastSelectionLength ); //現在入力中の位置にカーソルを移動
-            this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
+                this.EditBOX.Focus();
+                this.EditBOX.Select( LastSelectionStart, LastSelectionLength ); //現在入力中の位置にカーソルを移動
+                this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
+            }
         }
 
         private void ButtonListItemClear_Click(object sender, EventArgs e)
@@ -595,7 +598,11 @@ namespace TYPE_C_NowplayingEditor
 
                     //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
                     ////////////InsertStrIntoTextBox_EditBOX("$");
-                    ////////////InsertStrIntoTextBox_Func("$", TextBoxTweetText);
+                    ////////////InsertStrIntoTextBox_Func("$", ■TextBoxTweetText);
+
+                    ////////////TextBoxKeepStr = this.EditBOX.Text;
+
+                    ////////////InsertStrIntoTextBox_Func("$", this.EditBOX);
 
                     ////////////string ReplaceTextListData =
 
@@ -616,10 +623,6 @@ namespace TYPE_C_NowplayingEditor
                     ////////////"$NEWLINE - 改行" + "\r\n";
 
                     ////////////ContextMenu_Func(ReplaceTextListData);
-
-                    ////////////UI.ReplaceTextList dialog = new UI.ReplaceTextList();
-                    ////////////ContextMenu_Func(dialog.Text);
-
                 }
             }
 
@@ -898,6 +901,8 @@ namespace TYPE_C_NowplayingEditor
                 {
                     //Console.WriteLine(" $ が押されました");
 
+                    // TextBoxKeepStr = TextBoxTweetText.Text; //UNDO用に退避
+
                     //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
                     InsertStrIntoTextBox_Func("$",■TextBoxTweetText); //ユーザー関数
 
@@ -933,6 +938,7 @@ namespace TYPE_C_NowplayingEditor
         {
 
             ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
+            ReplaceTextListData = ReplaceTextListData.Replace("\r", "\n");  //リッチテキストボックス等で、改行コードがLFだった時の対処
 
             int t1;
             string[] s1;
@@ -1066,6 +1072,16 @@ namespace TYPE_C_NowplayingEditor
             };
             cntmenu.Items.Add(mPaste);
 
+            //Delete
+            ToolStripMenuItem mDelete = new ToolStripMenuItem();
+            mDelete.Text = "選択文字列の削除";
+            mDelete.Click += delegate
+            {
+                InsertStrIntoTextBox_Func("", objTextBox);  //ユーザー関数  //選択範囲を""で上書き
+            };
+            cntmenu.Items.Add(mDelete);
+
+
             ToolStripSeparator itemSeparator = new ToolStripSeparator();    //セパレータの作成
             cntmenu.Items.Add(itemSeparator);
 
@@ -1094,6 +1110,7 @@ namespace TYPE_C_NowplayingEditor
 
             
             ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
+            ReplaceTextListData = ReplaceTextListData.Replace("\r", "\n");  //リッチテキストボックス等で、改行コードがLFだった時の対処
 
             int t1;
             string[] s1;
@@ -1111,6 +1128,9 @@ namespace TYPE_C_NowplayingEditor
                     newcontitem.Text = s1[myIDX];
                     newcontitem.Click += delegate
                     {
+
+                        // TextBoxKeepStr = TextBoxTweetText.Text; //UNDO用に退避
+
                         String ReplaceText = newcontitem.Text;
 
                         //【×】挿入した「$」をスキップして、２文字目から「 - 」までの文字を挿入

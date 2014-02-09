@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmNowplayingEditor));
             this.ButtonUNDO = new System.Windows.Forms.Button();
             this.GroupBox2 = new System.Windows.Forms.GroupBox();
             this.EditBOX = new System.Windows.Forms.TextBox();
@@ -659,6 +660,7 @@
             this.Controls.Add(this.ButtonDefault);
             this.Controls.Add(this.ButtonSet);
             this.Controls.Add(this.ButtonQuit);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmNowplayingEditor";
             this.Text = "編集";
             this.Load += new System.EventHandler(this.frmNowplayingEditor_Load);
