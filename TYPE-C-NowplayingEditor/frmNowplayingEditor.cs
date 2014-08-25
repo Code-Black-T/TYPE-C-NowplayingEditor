@@ -620,9 +620,7 @@ namespace TYPE_C_NowplayingEditor
                     ////////////"$RATING - 評価" + "\r\n" +
                     ////////////"$TRACKNUMBER - トラックナンバー" + "\r\n" +
                     ////////////"$YEAR - リリース年" + "\r\n" +
-                    ////////////"$NEWLINE - 改行" + "\r\n" +
-                    ////////////"$GROUP - グループ名" + "\r\n" +
-                    ////////////"$RATESTAR - ★★★★★" + "\r\n";
+                    ////////////"$NEWLINE - 改行" + "\r\n";
 
                     ////////////ContextMenu_Func(ReplaceTextListData);
                 }
@@ -1103,9 +1101,7 @@ namespace TYPE_C_NowplayingEditor
             ////////////        "$RATING - 評価" + "\r\n" +
             ////////////        "$TRACKNUMBER - トラックナンバー" + "\r\n" +
             ////////////        "$YEAR - リリース年" + "\r\n" +
-            ////////////        "$NEWLINE - 改行" + "\r\n" +
-            ////////////        "$GROUP - グループ名" + "\r\n" +
-            ////////////        "$RATESTAR - ★★★★★" + "\r\n";
+            ////////////        "$NEWLINE - 改行" + "\r\n";
 
             string ReplaceTextListData = "";
 
