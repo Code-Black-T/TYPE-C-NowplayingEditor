@@ -46,6 +46,9 @@ namespace TYPE_C_NowplayingEditor
         //フォームのLoadイベントハンドラ
         private void frmNowplayingEditor_Load(object sender, EventArgs e)
         {
+
+            readAPL_PATH();
+
             //コマンドライン引数を配列で取得する
             string[] files = System.Environment.GetCommandLineArgs();
 
