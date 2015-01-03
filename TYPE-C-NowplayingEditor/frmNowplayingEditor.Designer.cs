@@ -362,7 +362,7 @@
             this.rButton20.Name = "rButton20";
             this.rButton20.Size = new System.Drawing.Size(247, 30);
             this.rButton20.TabIndex = 97;
-            this.rButton20.Text = "#なうぷれ";
+            this.rButton20.Text = "$GROUP グループ名";
             this.rButton20.UseVisualStyleBackColor = true;
             // 
             // rButton19
@@ -386,7 +386,7 @@
             this.rButton18.Name = "rButton18";
             this.rButton18.Size = new System.Drawing.Size(197, 30);
             this.rButton18.TabIndex = 90;
-            this.rButton18.Text = "#nowplaying";
+            this.rButton18.Text = "#なうぷれ";
             this.rButton18.UseVisualStyleBackColor = true;
             // 
             // rButton35
