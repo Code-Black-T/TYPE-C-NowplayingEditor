@@ -66,6 +66,16 @@ namespace TYPE_C_NowplayingEditor
             }
 
 
+            if (System.IO.File.Exists(GetAppPath() + "\\" + "NowplayingTunes.exe"))
+            {
+                NowplayingTunes_PATH = GetAppPath() + "\\" + "NowplayingTunes.exe";
+            }
+
+            if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
+            {
+                iTunes_PATH = "C:\\Program Files (x86)\\iTunes\\iTunes.exe";
+            }
+
             //配列の先頭には実行ファイルのパスが入っているので、
             //2番目以降がドロップされたファイルのパスになる
             for (int i = 1; i < files.Length; i++)
@@ -156,11 +166,7 @@ namespace TYPE_C_NowplayingEditor
 
             readEditData();
 
-            if (files.Length > 0)
-            {
-                readAPL_PATH();
-            }
-
+            readAPL_PATH();
             frmNowplayingEditor_DragDrop();
 
             //tweettextFromMainToEditor = 「メインウィンドウ」の TextBox.text
@@ -233,6 +239,20 @@ namespace TYPE_C_NowplayingEditor
                                         return ShortcutOriFilePath;
                                     }
                                 }
+                            }
+                            else
+                            {
+                                if (ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "iTunes.exe")
+                                {
+                                    iTunes_PATH = ShortcutOriFilePath;
+                                    return ShortcutOriFilePath;
+                                }
+                                else if (ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "NowplayingTunes.exe"
+                                       || ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "なうぷれTunes.exe")
+                                {
+                                    NowplayingTunes_PATH = ShortcutOriFilePath;
+                                    return ShortcutOriFilePath;
+                                }
                                 else
                                 {
                                     return "";
@@ -246,7 +266,7 @@ namespace TYPE_C_NowplayingEditor
                     }
                 }
             }
-            return ShortcutOriFilePath;
+            return "";
         }
 
         private void readAPL_PATH()
@@ -283,7 +303,7 @@ namespace TYPE_C_NowplayingEditor
                         if (Line.IndexOf("[NowplayingTunes_PATH]") >= 0)
                         {
                             NowplayingTunes_PATH = Line.Substring(Line.IndexOf("[NowplayingTunes_PATH]") + "[NowplayingTunes_PATH]".Length);
-                            NowplayingTunes_PATH = ShortcutToPath_Func(NowplayingTunes_PATH);
+                            ShortcutToPath_Func(NowplayingTunes_PATH);
                         }
                     }
 
@@ -296,7 +316,7 @@ namespace TYPE_C_NowplayingEditor
                         if (Line.IndexOf("[iTunes_PATH]") >= 0)
                         {
                             iTunes_PATH = Line.Substring(Line.IndexOf("[iTunes_PATH]") + "[iTunes_PATH]".Length);
-                            iTunes_PATH = ShortcutToPath_Func(iTunes_PATH);
+                            ShortcutToPath_Func(iTunes_PATH);
                         }
                     }
 
