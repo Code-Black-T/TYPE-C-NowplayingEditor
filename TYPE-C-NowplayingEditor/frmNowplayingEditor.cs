@@ -40,6 +40,8 @@ namespace TYPE_C_NowplayingEditor
         public string NowplayingTunes_PATH = "";
         public string iTunes_PATH = "";
 
+        public string PrevNowplayingTunes_PATH = "";
+
         //ボタンコントロール配列のフィールドを作成
         private System.Windows.Forms.Button[] replaceButtons;
 
@@ -48,6 +50,7 @@ namespace TYPE_C_NowplayingEditor
         {
 
             readAPL_PATH();
+            PrevNowplayingTunes_PATH = NowplayingTunes_PATH;
 
             //コマンドライン引数を配列で取得する
             string[] files = System.Environment.GetCommandLineArgs();
@@ -306,7 +309,6 @@ namespace TYPE_C_NowplayingEditor
                         if (Line.IndexOf("[NowplayingTunes_PATH]") >= 0)
                         {
                             NowplayingTunes_PATH = Line.Substring(Line.IndexOf("[NowplayingTunes_PATH]") + "[NowplayingTunes_PATH]".Length);
-                            ShortcutToPath_Func(NowplayingTunes_PATH);
                         }
                     }
 
@@ -341,7 +343,49 @@ namespace TYPE_C_NowplayingEditor
 
             iTunes_PATH = ShortcutToPath_Func(iTunes_PATH);
             NowplayingTunes_PATH = ShortcutToPath_Func(NowplayingTunes_PATH);
+            
+            if ( PrevNowplayingTunes_PATH != NowplayingTunes_PATH ) {
 
+                String PrevSettingFilePath = PrevNowplayingTunes_PATH.Substring(0,PrevNowplayingTunes_PATH.LastIndexOf("\\") +1) + "setting.xml";
+                String CurSettingFilePath = NowplayingTunes_PATH.Substring(0,NowplayingTunes_PATH.LastIndexOf("\\") +1) + "setting.xml";
+
+                if (System.IO.File.Exists(PrevSettingFilePath))
+                {
+                    if (System.IO.File.Exists(CurSettingFilePath))
+                    {
+                        if (MessageBox.Show(("【コピー元】：" + PrevSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
+                                + "\r\n" + "\r\n" + "既にsetting.xmlが存在します。上書きしますか？"), "設定ファイル上書き確認",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            //////////////////////////////////////////////////////////////
+                            // ファイルをコピーする
+                            //////////////////////////////////////////////////////////////
+
+                            //"C:\test\1.txt"を"C:\test\2.txt"にコピーする
+                            //コピーするファイルが存在しない時は、FileNotFoundExceptionが発生
+                            //コピー先のフォルダが存在しない時は、DirectoryNotFoundExceptionが発生
+                            //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
+                            //コピー先のファイルへのアクセスが拒否された時などで、
+                            //  UnauthorizedAccessExceptionが発生
+                            System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+                        }
+                    }
+                    else
+                    {
+                        if (MessageBox.Show(("新しいバージョンの なうぷれTunes 配下に 設定ファイルを旧フォルダからコピーしますか？"
+                            + "\r\n" + "\r\n" + "【コピー元】：" + PrevSettingFilePath), "設定ファイルコピー",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+
+                            System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+                            
+                        }
+                    }
+                }
+
+            }
+
+            PrevNowplayingTunes_PATH = NowplayingTunes_PATH;
             string buff = "";
 
             if (iTunes_PATH != "")
