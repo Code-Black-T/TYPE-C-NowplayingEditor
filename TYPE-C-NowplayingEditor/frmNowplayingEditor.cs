@@ -204,6 +204,19 @@ namespace TYPE_C_NowplayingEditor
         }
 
         private string ShortcutToPath_Func(string ShortcutOriFilePath){
+
+            //http://dobon.net/vb/dotnet/file/pathcombine.html //フォルダ毎ドラッグしても、なうぷれTunes を 検出
+            if (System.IO.File.Exists(System.IO.Path.Combine(ShortcutOriFilePath, "NowplayingTunes.exe")))
+            {
+                ShortcutOriFilePath = System.IO.Path.Combine(ShortcutOriFilePath, "NowplayingTunes.exe");
+            }
+
+            if (System.IO.File.Exists(System.IO.Path.Combine(ShortcutOriFilePath, "なうぷれTunes.exe")))
+            {
+                ShortcutOriFilePath = System.IO.Path.Combine(ShortcutOriFilePath, "なうぷれTunes.exe");
+            }
+
+
             if (ShortcutOriFilePath != "")
             {
                 //絶対パスに変換して、比較
@@ -345,6 +358,91 @@ namespace TYPE_C_NowplayingEditor
             NowplayingTunes_PATH = ShortcutToPath_Func(NowplayingTunes_PATH);
             
             if ( PrevNowplayingTunes_PATH != NowplayingTunes_PATH ) {
+
+                // C#
+                System.Diagnostics.Process[] proc;
+
+                proc = System.Diagnostics.Process.GetProcessesByName("NowplayingTunes");
+
+
+                //配列から1つずつ取り出す
+                foreach (System.Diagnostics.Process p in proc)
+                {
+
+                    try
+                    {
+                        p.Kill();
+                        //IDとメインウィンドウのキャプションを出力する
+                        Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
+
+                        // Test to see if the process is responding.
+                        if (p.Responding)
+                        {
+
+                        }
+                        else
+                        {
+                            if (p.HasExited)
+                            {//終了 
+                                //MessageBox.Show("起動されていません");
+                            }
+                            else if (p.Responding == false)
+                            {
+                                //MessageBox.Show("応答なし");
+                                //起動されているならKILL 
+                                //p.Kill();
+                            }
+                            //}
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("エラー : " + ex.Message);
+                    }
+                }
+
+                proc = System.Diagnostics.Process.GetProcessesByName("なうぷれTunes");
+
+
+                //配列から1つずつ取り出す
+                foreach (System.Diagnostics.Process p in proc)
+                {
+
+                    try
+                    {
+                        p.Kill();
+                        //IDとメインウィンドウのキャプションを出力する
+                        Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
+
+                        // Test to see if the process is responding.
+                        if (p.Responding)
+                        {
+
+                        }
+                        else
+                        {
+                            if (p.HasExited)
+                            {//終了 
+                                //MessageBox.Show("起動されていません");
+                            }
+                            else if (p.Responding == false)
+                            {
+                                //MessageBox.Show("応答なし");
+                                //起動されているならKILL 
+                                //p.Kill();
+                            }
+                            //}
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("エラー : " + ex.Message);
+                    }
+                }
+
+                System.Diagnostics.Process.Start(NowplayingTunes_PATH);
 
                 String PrevSettingFilePath = PrevNowplayingTunes_PATH.Substring(0,PrevNowplayingTunes_PATH.LastIndexOf("\\") +1) + "setting.xml";
                 String CurSettingFilePath = NowplayingTunes_PATH.Substring(0,NowplayingTunes_PATH.LastIndexOf("\\") +1) + "setting.xml";
