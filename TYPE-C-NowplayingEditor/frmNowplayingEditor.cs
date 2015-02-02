@@ -81,6 +81,10 @@ namespace TYPE_C_NowplayingEditor
             {
                 iTunes_PATH = "C:\\Program Files (x86)\\iTunes\\iTunes.exe";
             }
+            else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
+            {
+                iTunes_PATH = "C:\\Program Files\\iTunes\\iTunes.exe";
+            }
 
             //配列の先頭には実行ファイルのパスが入っているので、
             //2番目以降がドロップされたファイルのパスになる
@@ -94,26 +98,22 @@ namespace TYPE_C_NowplayingEditor
                 {
                     NowplayingTunes_PATH = GetAppPath() + "\\" + "なうぷれTunes.exe";
                 }
-                else
-                {
-                    ShortcutToPath_Func(files[i]);
-                }
-
-                if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
+                else if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
                 {
                     iTunes_PATH = "C:\\Program Files (x86)\\iTunes\\iTunes.exe";
                 }
-                else
+                else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
                 {
-                    ShortcutToPath_Func(files[i]);
+                    iTunes_PATH = "C:\\Program Files\\iTunes\\iTunes.exe";
                 }
 
+                ShortcutToPath_Func(files[i]);
+
+
             }
 
-            if (files.Length > 1)
-            {
-                writeAPL_PATH();
-            }
+            writeAPL_PATH();
+
 
             //////////////ContextMenu_RCLK_Func(■TextBoxTweetText);  //引数に渡したテキストボックス内での右クリックメニューを定義
             ContextMenu_RCLK_Func(this.EditBOX);  //引数に渡したテキストボックスの右クリックメニューをセット
@@ -203,7 +203,7 @@ namespace TYPE_C_NowplayingEditor
             this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
         }
 
-        private string ShortcutToPath_Func(string ShortcutOriFilePath){
+        private void ShortcutToPath_Func(string ShortcutOriFilePath){
 
             //http://dobon.net/vb/dotnet/file/pathcombine.html //フォルダ毎ドラッグしても、なうぷれTunes を 検出
             if (System.IO.File.Exists(System.IO.Path.Combine(ShortcutOriFilePath, "NowplayingTunes.exe")))
@@ -241,21 +241,15 @@ namespace TYPE_C_NowplayingEditor
 
                                 if (System.IO.File.Exists(shortcut.TargetPath))
                                 {
-
+                                    
                                     if (shortcut.TargetPath.Substring(shortcut.TargetPath.LastIndexOf("\\") + 1) == "iTunes.exe")
                                     {
                                         iTunes_PATH = shortcut.TargetPath;
-                                        return shortcut.TargetPath;
                                     }
                                     else if (shortcut.TargetPath.Substring(shortcut.TargetPath.LastIndexOf("\\") + 1) == "NowplayingTunes.exe"
                                            || shortcut.TargetPath.Substring(shortcut.TargetPath.LastIndexOf("\\") + 1) == "なうぷれTunes.exe")
                                     {
                                         NowplayingTunes_PATH = shortcut.TargetPath;
-                                        return shortcut.TargetPath;
-                                    }
-                                    else
-                                    {
-                                        return ShortcutOriFilePath;
                                     }
                                 }
                             }
@@ -264,28 +258,17 @@ namespace TYPE_C_NowplayingEditor
                                 if (ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "iTunes.exe")
                                 {
                                     iTunes_PATH = ShortcutOriFilePath;
-                                    return ShortcutOriFilePath;
                                 }
                                 else if (ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "NowplayingTunes.exe"
                                        || ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "なうぷれTunes.exe")
                                 {
                                     NowplayingTunes_PATH = ShortcutOriFilePath;
-                                    return ShortcutOriFilePath;
-                                }
-                                else
-                                {
-                                    return "";
                                 }
                             }
                         }
                     }
-                    else
-                    {
-                        return "";
-                    }
                 }
             }
-            return "";
         }
 
         private void readAPL_PATH()
@@ -329,6 +312,10 @@ namespace TYPE_C_NowplayingEditor
                     {
                         iTunes_PATH = "C:\\Program Files (x86)\\iTunes\\iTunes.exe";
                     }
+                    else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
+                    {
+                        iTunes_PATH = "C:\\Program Files\\iTunes\\iTunes.exe";
+                    }
                     else
                     {
                         if (Line.IndexOf("[iTunes_PATH]") >= 0)
@@ -354,9 +341,9 @@ namespace TYPE_C_NowplayingEditor
             //Create；ファイルを新規作成。すでに存在する場合は上書き
 
 
-            iTunes_PATH = ShortcutToPath_Func(iTunes_PATH);
-            NowplayingTunes_PATH = ShortcutToPath_Func(NowplayingTunes_PATH);
-            
+            //ShortcutToPath_Func(iTunes_PATH);
+            //ShortcutToPath_Func(NowplayingTunes_PATH);
+
             if ( PrevNowplayingTunes_PATH != NowplayingTunes_PATH ) {
 
                 // C#
@@ -1236,6 +1223,10 @@ namespace TYPE_C_NowplayingEditor
                 if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
                 {
                     System.Diagnostics.Process.Start("C:\\Program Files (x86)\\iTunes\\iTunes.exe"); //iTunesを起動
+                }
+                else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
+                {
+                    System.Diagnostics.Process.Start("C:\\Program Files\\iTunes\\iTunes.exe");
                 }
                 else
                 {

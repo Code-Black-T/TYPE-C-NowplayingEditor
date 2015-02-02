@@ -1,32 +1,32 @@
+﻿
+　なうぷれTunes 起動中に、置き換え文字の入力を支援するアプリです。
 
-�@�Ȃ��Ղ�Tunes �N�����ɁA�u�����������̓��͂��x������A�v���ł��B
+　公開フォルダ直下にある NowplayingEditor.exe はビルドせずに動きます。
 
-�@���J�t�H���_�����ɂ��� NowplayingEditor.exe �̓r���h�����ɓ����܂��B
+　当アプリと なうぷれTunes を同じ階層に入れるか、初回時、当アプリ
+に なうぷれTunes をフォルダ毎ドラッグ＆ドロップするかして・・・
+「なうぷれTunes」→「iTunes」の順で起動できるランチャー機能があります。
 
-�@���A�v���� �Ȃ��Ղ�Tunes �𓯂��K�w�ɓ���邩�A���񎞁A���A�v��
-�� �Ȃ��Ղ�Tunes ���t�H���_���h���b�O���h���b�v���邩���āE�E�E
-�u�Ȃ��Ղ�Tunes�v���uiTunes�v�̏��ŋN���ł��郉���`���[�@�\������܂��B
+（iTunes をデフォルトとは別の場所にインストールした場合は、初回時
+　iTunesを同様に ドラッグ＆ドロップして下さい。）
 
-�iiTunes ���f�t�H���g�Ƃ͕ʂ̏ꏊ�ɃC���X�g�[�������ꍇ�́A����
-�@iTunes�𓯗l�� �h���b�O���h���b�v���ĉ������B�j
-
-�@�����K�w�ɓ���Ȃ��Ă��A�E�B���h�E�̃L���v�V����������A�Ȃ��Ղ�
-Tunes ����肵�A�c�C�[�g�̐ݒ�̑���M����@�\������܂��B���̑��A
-�W���I�ȕ����̕ҏW�@�\������Ă��܂��B
-
-
-�@���A�v���́A�Ȃ��Ղ�Tunes�Ƃ͕ʃt�H���_�ɓ��ꂽ��ŁA�E�B���X�΍�
-�\�t�g�̃X�L�����ΏۊO�ɂ��Ă����āA�ȉ��̑�������s����Ύ�Ԃ��Ȃ�
-�܂��B
-
-�@�Ȃ��Ղ�Tunes���A�b�v�f�[�g���ɁAsetting.xml �̈��z���@�\������܂��B
-���Ȃ��Ղ�Tunes�������`���[�@�\���g���Ĉ�x�N�����āE�E�E
-�o�[�W�����A�b�v����x�ɁA�t�H���_�� ���A�v���Ƀh���b�O���ĉ������B
-�m�F��ʂƋ��Ƀf�[�^�̈ڍs������܂��B
-
-�@�Ȃ��Ղ�Tunes �� �N�������܂܃A�b�v�f�[�g�����ꍇ�́A�uiTunes�v�� 
-�u�Ȃ��Ղ�Tunes�v���ċN������K�v������܂��B���񂩂�͓��A�v����
-�_�u���N���b�N���āA�����`���[�@�\�ł���炪�N���ł��܂��B
+　同じ階層に入れなくても、ウィンドウのキャプション名から、なうぷれ
+Tunes を特定し、ツイートの設定の送受信する機能があります。その他、
+標準的な文字の編集機能を備えています。
 
 
-8:37 2015/01/29
+　当アプリは、なうぷれTunesとは別フォルダに入れた上で、ウィルス対策
+ソフトのスキャン対象外にしておいて、以下の操作を実行すれば手間が省け
+ます。
+
+　なうぷれTunesをアップデート時に使用できる setting.xml の引越し機能
+があります。旧なうぷれTunesをランチャー機能を使って一度起動して・・・
+バージョンアップする度に、フォルダ毎 当アプリにドラッグして下さい。
+確認画面と共にデータの移行がされます。
+
+　なうぷれTunes を 起動したままアップデートした場合は、「iTunes」と 
+「なうぷれTunes」を再起動する必要があります。次回からは当アプリを
+ダブルクリックして、ランチャー機能でそれらが起動できます。
+
+
+6:38 2015/02/03
