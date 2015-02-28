@@ -42,6 +42,8 @@ namespace TYPE_C_NowplayingEditor
 
         public string PrevNowplayingTunes_PATH = "";
 
+        public bool FileDroppedFLG = false;
+
         //ボタンコントロール配列のフィールドを作成
         private System.Windows.Forms.Button[] replaceButtons;
 
@@ -112,8 +114,14 @@ namespace TYPE_C_NowplayingEditor
 
             }
 
+            if (files.Length > 1)
+            {
+                FileDroppedFLG = true;
+            }
+
             writeAPL_PATH();
 
+            FileDroppedFLG = false;
 
             //////////////ContextMenu_RCLK_Func(■TextBoxTweetText);  //引数に渡したテキストボックス内での右クリックメニューを定義
             ContextMenu_RCLK_Func(this.EditBOX);  //引数に渡したテキストボックスの右クリックメニューをセット
@@ -174,6 +182,8 @@ namespace TYPE_C_NowplayingEditor
 
             readAPL_PATH();
             frmNowplayingEditor_DragDrop();
+
+            writeAPL_PATH();
 
             //tweettextFromMainToEditor = 「メインウィンドウ」の TextBox.text
             //tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
@@ -335,6 +345,11 @@ namespace TYPE_C_NowplayingEditor
         {
             string myPath = GetAppPath() + "\\" + "APL_PATH.txt";
 
+            String PrevSettingFilePath = PrevNowplayingTunes_PATH.Substring(0, PrevNowplayingTunes_PATH.LastIndexOf("\\") + 1) + "setting.xml";
+            String CurSettingFilePath = NowplayingTunes_PATH.Substring(0, NowplayingTunes_PATH.LastIndexOf("\\") + 1) + "setting.xml";
+
+            String BackUpSettingFilePath = GetAppPath() + "\\" + "setting.xml";
+
             System.IO.StreamWriter WS;
 
             WS = new System.IO.StreamWriter(new System.IO.FileStream(myPath, System.IO.FileMode.Create), System.Text.Encoding.UTF8);
@@ -431,9 +446,6 @@ namespace TYPE_C_NowplayingEditor
 
                 System.Diagnostics.Process.Start(NowplayingTunes_PATH);
 
-                String PrevSettingFilePath = PrevNowplayingTunes_PATH.Substring(0,PrevNowplayingTunes_PATH.LastIndexOf("\\") +1) + "setting.xml";
-                String CurSettingFilePath = NowplayingTunes_PATH.Substring(0,NowplayingTunes_PATH.LastIndexOf("\\") +1) + "setting.xml";
-
                 if (System.IO.File.Exists(PrevSettingFilePath))
                 {
                     if (System.IO.File.Exists(CurSettingFilePath))
@@ -453,6 +465,11 @@ namespace TYPE_C_NowplayingEditor
                             //コピー先のファイルへのアクセスが拒否された時などで、
                             //  UnauthorizedAccessExceptionが発生
                             System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+
+                            if (System.IO.File.Exists(PrevSettingFilePath))
+                            {
+                                System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
+                            }
                         }
                     }
                     else
@@ -463,14 +480,45 @@ namespace TYPE_C_NowplayingEditor
                         {
 
                             System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
-                            
+
+                            if (System.IO.File.Exists(PrevSettingFilePath))
+                            {
+                                System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
+                            }
                         }
                     }
                 }
 
             }
 
+            if (FileDroppedFLG == true && PrevNowplayingTunes_PATH == NowplayingTunes_PATH)
+            {
+                if (System.IO.File.Exists(BackUpSettingFilePath))
+                {
+                    if (System.IO.File.Exists(CurSettingFilePath))
+                    {
+                        if (MessageBox.Show(("【コピー元】：" + BackUpSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
+                                + "\r\n" + "\r\n" + "setting.xml を復元しますか？"), "設定ファイル復元",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            //////////////////////////////////////////////////////////////
+                            // ファイルをコピーする
+                            //////////////////////////////////////////////////////////////
+
+                            //"C:\test\1.txt"を"C:\test\2.txt"にコピーする
+                            //コピーするファイルが存在しない時は、FileNotFoundExceptionが発生
+                            //コピー先のフォルダが存在しない時は、DirectoryNotFoundExceptionが発生
+                            //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
+                            //コピー先のファイルへのアクセスが拒否された時などで、
+                            //  UnauthorizedAccessExceptionが発生
+                            System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
+                        }
+                    }
+                }
+            }
+
             PrevNowplayingTunes_PATH = NowplayingTunes_PATH;
+
             string buff = "";
 
             if (iTunes_PATH != "")
@@ -532,6 +580,11 @@ namespace TYPE_C_NowplayingEditor
 
                         ShortcutToPath_Func(files[myIDX]);
                     }
+                }
+
+                if (files.Length >= 1)
+                {
+                    FileDroppedFLG = true;
                 }
 
                 writeAPL_PATH();
@@ -950,9 +1003,9 @@ namespace TYPE_C_NowplayingEditor
 
         private void ButtonListItemClear_Click(object sender, EventArgs e)
         {
-            if (this.ComboBoxEditStr.Items.Count >= 1)
-            {
-                if (MessageBox.Show("履歴をすべて削除しますか？", "確認", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            //if (this.ComboBoxEditStr.Items.Count >= 1)
+            //{
+                if (MessageBox.Show("当フォームの履歴など設定ファイルを初期化しますか？", "確認", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
                     this.ComboBoxEditStr.Items.Clear();
 
@@ -963,15 +1016,31 @@ namespace TYPE_C_NowplayingEditor
                     WS = new System.IO.StreamWriter(
                           new System.IO.FileStream(myPath, System.IO.FileMode.Create), System.Text.Encoding.UTF8); //Create；ファイルを新規作成。すでに存在する場合は上書き
 
-                    WS.Write("");             //出力データ
+
+                    string PreSetData =
+                    "$ARTIST - $TITLE #NowPlaying #なうぷれ" + "\r\n" +
+                    "$TITLE / $ARTIST #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪「$TITLE」 (ALBUM:$ALBUMNAME) #NowPlaying #なうぷれ" + "\r\n" +
+                     "$ARTIST - ♪$TITLE (「$ALBUMNAME」より) #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪「$TITLE」 ($ALBUMNAME) #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪「$TITLE」 #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪$TITLE ($YEAR年 リリース「$ALBUMNAME」より) #NowPlaying #なうぷれ";
+
+
+                    WS.Write(PreSetData);             //出力データ
                     WS.WriteLine();           //行終端文
                     WS.Close();
+
+                    readEditData();
+
+                    System.IO.File.Delete(@GetAppPath() + "\\" + "APL_PATH.txt");
+                    System.IO.File.Delete(@GetAppPath() + "\\" + "setting.xml");
                 }
-            }
-            else
-            {
-                Console.Beep();  //  http://dobon.net/vb/dotnet/vb2cs/vbbeep.html
-            }
+            //}
+            //else
+            //{
+            //    Console.Beep();  //  http://dobon.net/vb/dotnet/vb2cs/vbbeep.html
+            //}
         }
 
         private void ComboBoxEditStr_SelectedIndexChanged(object sender, EventArgs e)
