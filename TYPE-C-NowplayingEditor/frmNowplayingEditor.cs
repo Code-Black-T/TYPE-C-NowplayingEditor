@@ -43,7 +43,10 @@ namespace TYPE_C_NowplayingEditor
         public string PrevNowplayingTunes_PATH = "";
 
         public bool FileDroppedFLG = false;
+        public bool GetCommandLineArgsFLG = false;
+        public bool APL_RUN = false;
 
+        
         //ボタンコントロール配列のフィールドを作成
         private System.Windows.Forms.Button[] replaceButtons;
 
@@ -117,11 +120,18 @@ namespace TYPE_C_NowplayingEditor
             if (files.Length > 1)
             {
                 FileDroppedFLG = true;
+                GetCommandLineArgsFLG = true;
             }
+
 
             writeAPL_PATH();
 
-            FileDroppedFLG = false;
+            if (FileDroppedFLG == true)
+            {
+                FileDroppedFLG = false;
+                //GetCommandLineArgsFLG = false;
+            }
+            
 
             //////////////ContextMenu_RCLK_Func(■TextBoxTweetText);  //引数に渡したテキストボックス内での右クリックメニューを定義
             ContextMenu_RCLK_Func(this.EditBOX);  //引数に渡したテキストボックスの右クリックメニューをセット
@@ -181,14 +191,27 @@ namespace TYPE_C_NowplayingEditor
             readEditData();
 
             readAPL_PATH();
+
             frmNowplayingEditor_DragDrop();
 
             writeAPL_PATH();
+            if (FileDroppedFLG == true)
+            {
+                FileDroppedFLG = false;
+            }
+
+            if (APL_RUN == false)
+            {
+                System.Diagnostics.Process.Start(NowplayingTunes_PATH);
+                APL_RUN = true;
+            }
 
             //tweettextFromMainToEditor = 「メインウィンドウ」の TextBox.text
             //tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
 
             tweettextFromMainToEditor = GetOrSetTextForNowplayingTunes("GET");
+
+            GetCommandLineArgsFLG = false;
 
             this.EditBOX.Text = tweettextFromMainToEditor; //「メインウィンドウ」側から、「ツイートする文字の設定」を読み込む
             this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
@@ -343,6 +366,8 @@ namespace TYPE_C_NowplayingEditor
 
         private void writeAPL_PATH()
         {
+            if (FileDroppedFLG == false) return;
+
             string myPath = GetAppPath() + "\\" + "APL_PATH.txt";
 
             String PrevSettingFilePath = PrevNowplayingTunes_PATH.Substring(0, PrevNowplayingTunes_PATH.LastIndexOf("\\") + 1) + "setting.xml";
@@ -361,97 +386,76 @@ namespace TYPE_C_NowplayingEditor
 
             if ( PrevNowplayingTunes_PATH != NowplayingTunes_PATH ) {
 
-                // C#
-                System.Diagnostics.Process[] proc;
-
-                proc = System.Diagnostics.Process.GetProcessesByName("NowplayingTunes");
-
-
-                //配列から1つずつ取り出す
-                foreach (System.Diagnostics.Process p in proc)
+                if (PrevSettingFilePath == "" || PrevSettingFilePath == "setting.xml")
                 {
-
-                    try
-                    {
-                        p.Kill();
-                        //IDとメインウィンドウのキャプションを出力する
-                        Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
-
-                        // Test to see if the process is responding.
-                        if (p.Responding)
+                        if (System.IO.File.Exists(CurSettingFilePath))
                         {
+                            MessageBox.Show(("当アプリに初めて、なうぷれTunesがドラッグ＆ドロップされました。setting.xmlを退避します。"
+                                + "\r\n" + "\r\n" + "【コピー元】：" + CurSettingFilePath), "設定ファイルコピー",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                //System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
 
+                            if (System.IO.File.Exists(CurSettingFilePath))
+                            {
+                                System.IO.File.Copy(@CurSettingFilePath, @BackUpSettingFilePath, true);
+                            }
+                        }
+  
+                }
+                else
+                {
+                    if (System.IO.File.Exists(PrevSettingFilePath))
+                    {
+                        if (System.IO.File.Exists(CurSettingFilePath))
+                        {
+                            if (MessageBox.Show(("【コピー元】：" + PrevSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
+                                    + "\r\n" + "\r\n" + "既にsetting.xmlが存在します。上書きしますか？"), "設定ファイル上書き確認",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                            {
+                                //////////////////////////////////////////////////////////////
+                                // ファイルをコピーする
+                                //////////////////////////////////////////////////////////////
+
+                                //"C:\test\1.txt"を"C:\test\2.txt"にコピーする
+                                //コピーするファイルが存在しない時は、FileNotFoundExceptionが発生
+                                //コピー先のフォルダが存在しない時は、DirectoryNotFoundExceptionが発生
+                                //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
+                                //コピー先のファイルへのアクセスが拒否された時などで、
+                                //  UnauthorizedAccessExceptionが発生
+                                System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+
+                                if (System.IO.File.Exists(PrevSettingFilePath))
+                                {
+                                    System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
+                                }
+                            }
                         }
                         else
                         {
-                            if (p.HasExited)
-                            {//終了 
-                                //MessageBox.Show("起動されていません");
-                            }
-                            else if (p.Responding == false)
+                            if (MessageBox.Show(("新しいバージョンの なうぷれTunes 配下に 設定ファイルを旧フォルダからコピーしますか？"
+                                + "\r\n" + "\r\n" + "【コピー元】：" + PrevSettingFilePath), "設定ファイルコピー",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                             {
-                                //MessageBox.Show("応答なし");
-                                //起動されているならKILL 
-                                //p.Kill();
-                            }
-                            //}
-                        }
 
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("エラー : " + ex.Message);
+                                System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+
+                                if (System.IO.File.Exists(PrevSettingFilePath))
+                                {
+                                    System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
+                                }
+                            }
+                        }
                     }
                 }
 
-                proc = System.Diagnostics.Process.GetProcessesByName("なうぷれTunes");
-
-
-                //配列から1つずつ取り出す
-                foreach (System.Diagnostics.Process p in proc)
+            }
+            else if ( PrevNowplayingTunes_PATH == NowplayingTunes_PATH)
+            {
+                if (System.IO.File.Exists(BackUpSettingFilePath))
                 {
-
-                    try
+                    if (System.IO.File.Exists(CurSettingFilePath) == false)
                     {
-                        p.Kill();
-                        //IDとメインウィンドウのキャプションを出力する
-                        Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
-
-                        // Test to see if the process is responding.
-                        if (p.Responding)
-                        {
-
-                        }
-                        else
-                        {
-                            if (p.HasExited)
-                            {//終了 
-                                //MessageBox.Show("起動されていません");
-                            }
-                            else if (p.Responding == false)
-                            {
-                                //MessageBox.Show("応答なし");
-                                //起動されているならKILL 
-                                //p.Kill();
-                            }
-                            //}
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("エラー : " + ex.Message);
-                    }
-                }
-
-                System.Diagnostics.Process.Start(NowplayingTunes_PATH);
-
-                if (System.IO.File.Exists(PrevSettingFilePath))
-                {
-                    if (System.IO.File.Exists(CurSettingFilePath))
-                    {
-                        if (MessageBox.Show(("【コピー元】：" + PrevSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
-                                + "\r\n" + "\r\n" + "既にsetting.xmlが存在します。上書きしますか？"), "設定ファイル上書き確認",
+                        if (MessageBox.Show(("【コピー元】：" + BackUpSettingFilePath + "\r\n" + "\r\n" + "setting.xml を復元しますか？"), "設定ファイル復元",
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                         {
                             //////////////////////////////////////////////////////////////
@@ -464,38 +468,10 @@ namespace TYPE_C_NowplayingEditor
                             //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
                             //コピー先のファイルへのアクセスが拒否された時などで、
                             //  UnauthorizedAccessExceptionが発生
-                            System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
-
-                            if (System.IO.File.Exists(PrevSettingFilePath))
-                            {
-                                System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
-                            }
+                            System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
                         }
                     }
-                    else
-                    {
-                        if (MessageBox.Show(("新しいバージョンの なうぷれTunes 配下に 設定ファイルを旧フォルダからコピーしますか？"
-                            + "\r\n" + "\r\n" + "【コピー元】：" + PrevSettingFilePath), "設定ファイルコピー",
-                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                        {
-
-                            System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
-
-                            if (System.IO.File.Exists(PrevSettingFilePath))
-                            {
-                                System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
-                            }
-                        }
-                    }
-                }
-
-            }
-
-            if (FileDroppedFLG == true && PrevNowplayingTunes_PATH == NowplayingTunes_PATH)
-            {
-                if (System.IO.File.Exists(BackUpSettingFilePath))
-                {
-                    if (System.IO.File.Exists(CurSettingFilePath))
+                    else if (System.IO.File.Exists(CurSettingFilePath))
                     {
                         if (MessageBox.Show(("【コピー元】：" + BackUpSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
                                 + "\r\n" + "\r\n" + "setting.xml を復元しますか？"), "設定ファイル復元",
@@ -516,6 +492,99 @@ namespace TYPE_C_NowplayingEditor
                     }
                 }
             }
+
+
+
+            // C#
+            System.Diagnostics.Process[] proc;
+
+            proc = System.Diagnostics.Process.GetProcessesByName("NowplayingTunes");
+
+
+            //配列から1つずつ取り出す
+            foreach (System.Diagnostics.Process p in proc)
+            {
+
+                try
+                {
+                    //p.Kill();
+                    //IDとメインウィンドウのキャプションを出力する
+                    Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
+
+                    // Test to see if the process is responding.
+                    if (p.Responding)
+                    {
+                        //p.Kill();
+                    }
+                    else
+                    {
+                        if (p.HasExited)
+                        {//終了 
+                            //MessageBox.Show("起動されていません");
+                        }
+                        else if (p.Responding == false)
+                        {
+                            //MessageBox.Show("応答なし");
+                            //起動されているならKILL 
+                            //p.Kill();
+                        }
+                        //}
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("エラー : " + ex.Message);
+                }
+            }
+
+            proc = System.Diagnostics.Process.GetProcessesByName("なうぷれTunes");
+
+
+            //配列から1つずつ取り出す
+            foreach (System.Diagnostics.Process p in proc)
+            {
+
+                try
+                {
+                   //p.Kill();
+                    //IDとメインウィンドウのキャプションを出力する
+                    Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
+
+                    // Test to see if the process is responding.
+                    if (p.Responding)
+                    {
+                        p.Kill();
+                    }
+                    else
+                    {
+                        if (p.HasExited)
+                        {//終了 
+                            //MessageBox.Show("起動されていません");
+                        }
+                        else if (p.Responding == false)
+                        {
+                            //MessageBox.Show("応答なし");
+                            //起動されているならKILL 
+                            //p.Kill();
+                        }
+                        //}
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("エラー : " + ex.Message);
+                }
+            }
+
+
+            if (APL_RUN == false)
+            {
+                System.Diagnostics.Process.Start(NowplayingTunes_PATH);
+                APL_RUN = true;
+            }
+
 
             PrevNowplayingTunes_PATH = NowplayingTunes_PATH;
 
@@ -588,6 +657,7 @@ namespace TYPE_C_NowplayingEditor
                 }
 
                 writeAPL_PATH();
+                FileDroppedFLG = false;
             };
         }
 
@@ -1242,8 +1312,11 @@ namespace TYPE_C_NowplayingEditor
                 {
                     if (System.IO.File.Exists(NowplayingTunes_PATH))
                     {
-                        System.Diagnostics.Process.Start(NowplayingTunes_PATH);
-
+                        if (APL_RUN == false)
+                        {
+                            System.Diagnostics.Process.Start(NowplayingTunes_PATH);
+                            APL_RUN = true;
+                        }
                         //メッセージキューに現在あるWindowsメッセージをすべて処理する
                         //System.Windows.Forms.Application.DoEvents();
 
