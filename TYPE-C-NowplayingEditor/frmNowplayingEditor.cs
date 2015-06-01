@@ -43,7 +43,6 @@ namespace TYPE_C_NowplayingEditor
         public string PrevNowplayingTunes_PATH = "";
 
         public bool FileDroppedFLG = false;
-        public bool GetCommandLineArgsFLG = false;
         public bool APL_RUN = false;
 
         
@@ -120,7 +119,6 @@ namespace TYPE_C_NowplayingEditor
             if (files.Length > 1)
             {
                 FileDroppedFLG = true;
-                GetCommandLineArgsFLG = true;
             }
 
 
@@ -129,7 +127,6 @@ namespace TYPE_C_NowplayingEditor
             if (FileDroppedFLG == true)
             {
                 FileDroppedFLG = false;
-                //GetCommandLineArgsFLG = false;
             }
             
 
@@ -210,8 +207,6 @@ namespace TYPE_C_NowplayingEditor
             //tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
 
             tweettextFromMainToEditor = GetOrSetTextForNowplayingTunes("GET");
-
-            GetCommandLineArgsFLG = false;
 
             this.EditBOX.Text = tweettextFromMainToEditor; //「メインウィンドウ」側から、「ツイートする文字の設定」を読み込む
             this.EditBOX.Text = this.EditBOX.Text.Replace("$NEWLINE", "\r\n");
@@ -304,6 +299,47 @@ namespace TYPE_C_NowplayingEditor
             }
         }
 
+        private bool CheckSetting_xml(string Setting_xml_Path)
+        {
+            string myPath = Setting_xml_Path;
+
+            if (myPath != "")
+            {
+                if (System.IO.File.Exists(myPath))
+                {
+                    System.IO.StreamReader TextFile;
+                    string Line;
+
+                    TextFile = new System.IO.StreamReader(myPath, System.Text.Encoding.UTF8);
+                    Line = TextFile.ReadLine();
+
+                    //カレントディレクトリを変更
+                    System.Environment.CurrentDirectory = GetAppPath() + "\\";
+
+                    while (Line != null)
+                    {
+                        if (Line.Contains("<AccountList />"))
+                        {
+                            TextFile.Close();
+                            return false;
+                        }
+                        Line = TextFile.ReadLine();
+                    }
+                    TextFile.Close();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
         private void readAPL_PATH()
         {
             string myPath = GetAppPath() + "\\" + "APL_PATH.txt";
@@ -381,6 +417,10 @@ namespace TYPE_C_NowplayingEditor
             //Create；ファイルを新規作成。すでに存在する場合は上書き
 
 
+
+            //MessageBox.Show((" PrevSettingFilePath：" + PrevSettingFilePath + "\r\nCurSettingFilePath：" + CurSettingFilePath + "\r\nBackUpSettingFilePath：" + BackUpSettingFilePath), "デバッグ用メッセージボックス");
+
+
             //ShortcutToPath_Func(iTunes_PATH);
             //ShortcutToPath_Func(NowplayingTunes_PATH);
 
@@ -388,23 +428,23 @@ namespace TYPE_C_NowplayingEditor
 
                 if (PrevSettingFilePath == "" || PrevSettingFilePath == "setting.xml")
                 {
+                    if (System.IO.File.Exists(CurSettingFilePath) && CheckSetting_xml(CurSettingFilePath))
+                    {
+                        MessageBox.Show(("当アプリに初めて、なうぷれTunesがドラッグ＆ドロップされました。setting.xmlを退避します。"
+                            + "\r\n" + "\r\n" + "【コピー元】：" + CurSettingFilePath), "設定ファイルコピー",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                        //System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+
                         if (System.IO.File.Exists(CurSettingFilePath))
                         {
-                            MessageBox.Show(("当アプリに初めて、なうぷれTunesがドラッグ＆ドロップされました。setting.xmlを退避します。"
-                                + "\r\n" + "\r\n" + "【コピー元】：" + CurSettingFilePath), "設定ファイルコピー",
-                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                                //System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
-
-                            if (System.IO.File.Exists(CurSettingFilePath))
-                            {
-                                System.IO.File.Copy(@CurSettingFilePath, @BackUpSettingFilePath, true);
-                            }
+                            System.IO.File.Copy(@CurSettingFilePath, @BackUpSettingFilePath, true);
                         }
-  
+                    }
+
                 }
                 else
                 {
-                    if (System.IO.File.Exists(PrevSettingFilePath))
+                    if (System.IO.File.Exists(PrevSettingFilePath) && CheckSetting_xml(PrevSettingFilePath))
                     {
                         if (System.IO.File.Exists(CurSettingFilePath))
                         {
@@ -424,7 +464,7 @@ namespace TYPE_C_NowplayingEditor
                                 //  UnauthorizedAccessExceptionが発生
                                 System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
 
-                                if (System.IO.File.Exists(PrevSettingFilePath))
+                                if (System.IO.File.Exists(PrevSettingFilePath) && CheckSetting_xml(PrevSettingFilePath))
                                 {
                                     System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
                                 }
@@ -436,13 +476,23 @@ namespace TYPE_C_NowplayingEditor
                                 + "\r\n" + "\r\n" + "【コピー元】：" + PrevSettingFilePath), "設定ファイルコピー",
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                             {
-
-                                System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
-
-                                if (System.IO.File.Exists(PrevSettingFilePath))
+                                if (System.IO.File.Exists(PrevSettingFilePath) && CheckSetting_xml(PrevSettingFilePath))
                                 {
+                                    System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
                                     System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
                                 }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (MessageBox.Show(("新しいバージョンの なうぷれTunes 配下に 設定ファイルをコピーしますか？"
+                            + "\r\n" + "\r\n" + "【コピー元】：" + BackUpSettingFilePath), "設定ファイルコピー",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            if (System.IO.File.Exists(BackUpSettingFilePath) && CheckSetting_xml(BackUpSettingFilePath))
+                            {
+                                System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
                             }
                         }
                     }
@@ -451,7 +501,7 @@ namespace TYPE_C_NowplayingEditor
             }
             else if ( PrevNowplayingTunes_PATH == NowplayingTunes_PATH)
             {
-                if (System.IO.File.Exists(BackUpSettingFilePath))
+                if (System.IO.File.Exists(BackUpSettingFilePath) && CheckSetting_xml(BackUpSettingFilePath))
                 {
                     if (System.IO.File.Exists(CurSettingFilePath) == false)
                     {
