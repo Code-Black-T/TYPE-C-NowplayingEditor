@@ -362,7 +362,7 @@
             this.rButton20.Name = "rButton20";
             this.rButton20.Size = new System.Drawing.Size(247, 30);
             this.rButton20.TabIndex = 97;
-            this.rButton20.Text = "$GROUP グループ名";
+            this.rButton20.Text = "#なうぷれ";
             this.rButton20.UseVisualStyleBackColor = true;
             // 
             // rButton19
@@ -386,7 +386,7 @@
             this.rButton18.Name = "rButton18";
             this.rButton18.Size = new System.Drawing.Size(197, 30);
             this.rButton18.TabIndex = 90;
-            this.rButton18.Text = "#なうぷれ";
+            this.rButton18.Text = "#nowplaying";
             this.rButton18.UseVisualStyleBackColor = true;
             // 
             // rButton35
@@ -609,9 +609,9 @@
             this.ButtonListItemClear.Location = new System.Drawing.Point(393, 389);
             this.ButtonListItemClear.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonListItemClear.Name = "ButtonListItemClear";
-            this.ButtonListItemClear.Size = new System.Drawing.Size(184, 33);
+            this.ButtonListItemClear.Size = new System.Drawing.Size(165, 33);
             this.ButtonListItemClear.TabIndex = 154;
-            this.ButtonListItemClear.Text = "設定ファイル削除 (&R)";
+            this.ButtonListItemClear.Text = "全履歴クリア (&R)";
             this.ButtonListItemClear.UseVisualStyleBackColor = true;
             this.ButtonListItemClear.Click += new System.EventHandler(this.ButtonListItemClear_Click);
             // 
@@ -628,10 +628,10 @@
             // 
             // ButtonSet
             // 
-            this.ButtonSet.Location = new System.Drawing.Point(585, 389);
+            this.ButtonSet.Location = new System.Drawing.Point(576, 389);
             this.ButtonSet.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonSet.Name = "ButtonSet";
-            this.ButtonSet.Size = new System.Drawing.Size(156, 33);
+            this.ButtonSet.Size = new System.Drawing.Size(160, 33);
             this.ButtonSet.TabIndex = 155;
             this.ButtonSet.Text = "OK (&O)";
             this.ButtonSet.UseVisualStyleBackColor = true;
@@ -639,10 +639,10 @@
             // 
             // ButtonQuit
             // 
-            this.ButtonQuit.Location = new System.Drawing.Point(744, 389);
+            this.ButtonQuit.Location = new System.Drawing.Point(745, 389);
             this.ButtonQuit.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonQuit.Name = "ButtonQuit";
-            this.ButtonQuit.Size = new System.Drawing.Size(163, 33);
+            this.ButtonQuit.Size = new System.Drawing.Size(160, 33);
             this.ButtonQuit.TabIndex = 156;
             this.ButtonQuit.Text = "キャンセル (&C)";
             this.ButtonQuit.UseVisualStyleBackColor = true;

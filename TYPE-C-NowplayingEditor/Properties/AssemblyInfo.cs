@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TYPE-C-NowplayingEditor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany(".Real com")]
+[assembly: AssemblyCompany("Toshiba")]
 [assembly: AssemblyProduct("TYPE-C-NowplayingEditor")]
-[assembly: AssemblyCopyright("Copyright © .Real com 2015")]
+[assembly: AssemblyCopyright("Copyright © Toshiba 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
