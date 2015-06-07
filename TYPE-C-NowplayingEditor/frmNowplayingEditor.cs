@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using IWshRuntimeLibrary;  ////http://d.hatena.ne.jp/hikaruright/20121026/1351214441
 
 // MainWindow.TextBoxTweetText.Text とツイート設定をやり取り
 
@@ -31,11 +32,20 @@ namespace TYPE_C_NowplayingEditor
 
         ToolTip ToolTip1;
 
-        ■int LastSelectionStart;
-        ■int LastSelectionLength;
+        int LastSelectionStart;
+        int LastSelectionLength;
 
         string TextBoxKeepStr; //ＯＫボタンを押す前のデータを退避
 
+        public string NowplayingTunes_PATH = "";
+        public string iTunes_PATH = "";
+
+        public string PrevNowplayingTunes_PATH = "";
+
+        public bool FileDroppedFLG = false;
+        public bool APL_RUN = false;
+
+        
         //ボタンコントロール配列のフィールドを作成
         private System.Windows.Forms.Button[] replaceButtons;
 
@@ -43,8 +53,85 @@ namespace TYPE_C_NowplayingEditor
         private void frmNowplayingEditor_Load(object sender, EventArgs e)
         {
 
-            ContextMenu_RCLK_Func(■TextBoxTweetText);  //引数に渡したテキストボックス内での右クリックメニューを定義
-            //////////////ContextMenu_RCLK_Func(this.EditBOX);  //引数に渡したテキストボックスの右クリックメニューをセット
+            readAPL_PATH();
+            PrevNowplayingTunes_PATH = NowplayingTunes_PATH;
+
+            //コマンドライン引数を配列で取得する
+            string[] files = System.Environment.GetCommandLineArgs();
+
+            if (files.Length > 1)
+            {
+                //配列の要素数が2以上の時、コマンドライン引数が存在する
+                Console.WriteLine("次のファイルがドロップされました");
+
+                //配列の先頭には実行ファイルのパスが入っているので、
+                //2番目以降がドロップされたファイルのパスになる
+                //for (int i = 1; i < files.Length; i++)
+                //{
+                //    Console.WriteLine(files[i]);
+                //}
+
+                //APL_PATH = files[1];
+                //return APL_PATH;
+            }
+
+
+            if (System.IO.File.Exists(GetAppPath() + "\\" + "NowplayingTunes.exe"))
+            {
+                NowplayingTunes_PATH = GetAppPath() + "\\" + "NowplayingTunes.exe";
+            }
+
+            if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
+            {
+                iTunes_PATH = "C:\\Program Files (x86)\\iTunes\\iTunes.exe";
+            }
+            else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
+            {
+                iTunes_PATH = "C:\\Program Files\\iTunes\\iTunes.exe";
+            }
+
+            //配列の先頭には実行ファイルのパスが入っているので、
+            //2番目以降がドロップされたファイルのパスになる
+            for (int i = 1; i < files.Length; i++)
+            {
+                if (System.IO.File.Exists(GetAppPath() + "\\" + "NowplayingTunes.exe"))
+                {
+                    NowplayingTunes_PATH = GetAppPath() + "\\" + "NowplayingTunes.exe";
+                }
+                else if (System.IO.File.Exists(GetAppPath() + "\\" + "なうぷれTunes.exe"))
+                {
+                    NowplayingTunes_PATH = GetAppPath() + "\\" + "なうぷれTunes.exe";
+                }
+                else if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
+                {
+                    iTunes_PATH = "C:\\Program Files (x86)\\iTunes\\iTunes.exe";
+                }
+                else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
+                {
+                    iTunes_PATH = "C:\\Program Files\\iTunes\\iTunes.exe";
+                }
+
+                ShortcutToPath_Func(files[i]);
+
+
+            }
+
+            if (files.Length > 1)
+            {
+                FileDroppedFLG = true;
+            }
+
+
+            writeAPL_PATH();
+
+            if (FileDroppedFLG == true)
+            {
+                FileDroppedFLG = false;
+            }
+            
+
+            //////////////ContextMenu_RCLK_Func(■TextBoxTweetText);  //引数に渡したテキストボックス内での右クリックメニューを定義
+            ContextMenu_RCLK_Func(this.EditBOX);  //引数に渡したテキストボックスの右クリックメニューをセット
 
             // http://dobon.net/vb/dotnet/control/buttonarray.html
             // http://social.msdn.microsoft.com/Forums/ja-JP/csharpgeneralja/thread/29b6239c-c672-4592-9b03-3784ad366b8c/
@@ -100,6 +187,22 @@ namespace TYPE_C_NowplayingEditor
 
             readEditData();
 
+            readAPL_PATH();
+
+            frmNowplayingEditor_DragDrop();
+
+            writeAPL_PATH();
+            if (FileDroppedFLG == true)
+            {
+                FileDroppedFLG = false;
+            }
+
+            if (APL_RUN == false)
+            {
+                System.Diagnostics.Process.Start(NowplayingTunes_PATH);
+                APL_RUN = true;
+            }
+
             //tweettextFromMainToEditor = 「メインウィンドウ」の TextBox.text
             //tweettextFromMainToEditor = MainWindow.TextBoxTweetText.Text;
 
@@ -126,8 +229,523 @@ namespace TYPE_C_NowplayingEditor
             this.EditBOX.Focus();
             this.EditBOX.Select( LastSelectionStart, LastSelectionLength ); //現在入力中の位置にカーソルを移動
             this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
+        }
+
+        private void ShortcutToPath_Func(string ShortcutOriFilePath){
+
+            //http://dobon.net/vb/dotnet/file/pathcombine.html //フォルダ毎ドラッグしても、なうぷれTunes を 検出
+            if (System.IO.File.Exists(System.IO.Path.Combine(ShortcutOriFilePath, "NowplayingTunes.exe")))
+            {
+                ShortcutOriFilePath = System.IO.Path.Combine(ShortcutOriFilePath, "NowplayingTunes.exe");
+            }
+
+            if (System.IO.File.Exists(System.IO.Path.Combine(ShortcutOriFilePath, "なうぷれTunes.exe")))
+            {
+                ShortcutOriFilePath = System.IO.Path.Combine(ShortcutOriFilePath, "なうぷれTunes.exe");
+            }
+
+
+            if (ShortcutOriFilePath != "")
+            {
+                //絶対パスに変換して、比較
+                if (ShortcutOriFilePath == Application.ExecutablePath
+                    || System.IO.Path.GetFullPath(ShortcutOriFilePath) == Application.ExecutablePath)  //自分自身のパスは何もしない
+                {
+                    ShortcutOriFilePath = "";
+                }
+                else
+                {
+                    if (System.IO.File.Exists(ShortcutOriFilePath))
+                    {
+                        if (ShortcutOriFilePath.Length >= 4)
+                        {
+                            if (ShortcutOriFilePath.LastIndexOf(".lnk") == ShortcutOriFilePath.Length - 4)
+                            {
+                                //http://d.hatena.ne.jp/hikaruright/20121026/1351214441
+                                // .lnkファイルからpathを拾う
+                                IWshShell_Class shell = new IWshShell_Class();
+                                IWshShortcut_Class shortcut;
+                                shortcut = (IWshShortcut_Class)shell.CreateShortcut(ShortcutOriFilePath);
+
+                                if (System.IO.File.Exists(shortcut.TargetPath))
+                                {
+                                    
+                                    if (shortcut.TargetPath.Substring(shortcut.TargetPath.LastIndexOf("\\") + 1) == "iTunes.exe")
+                                    {
+                                        iTunes_PATH = shortcut.TargetPath;
+                                    }
+                                    else if (shortcut.TargetPath.Substring(shortcut.TargetPath.LastIndexOf("\\") + 1) == "NowplayingTunes.exe"
+                                           || shortcut.TargetPath.Substring(shortcut.TargetPath.LastIndexOf("\\") + 1) == "なうぷれTunes.exe")
+                                    {
+                                        NowplayingTunes_PATH = shortcut.TargetPath;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "iTunes.exe")
+                                {
+                                    iTunes_PATH = ShortcutOriFilePath;
+                                }
+                                else if (ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "NowplayingTunes.exe"
+                                       || ShortcutOriFilePath.Substring(ShortcutOriFilePath.LastIndexOf("\\") + 1) == "なうぷれTunes.exe")
+                                {
+                                    NowplayingTunes_PATH = ShortcutOriFilePath;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool CheckSetting_xml(string Setting_xml_Path)
+        {
+            string myPath = Setting_xml_Path;
+
+            if (myPath != "")
+            {
+                if (System.IO.File.Exists(myPath))
+                {
+                    System.IO.StreamReader TextFile;
+                    string Line;
+                    string Lines = "";
+
+                    TextFile = new System.IO.StreamReader(myPath, System.Text.Encoding.UTF8);
+                    Line = TextFile.ReadLine();
+                    Lines = Lines + Line;
+
+                    //カレントディレクトリを変更
+                    System.Environment.CurrentDirectory = GetAppPath() + "\\";
+
+                    while (Line != null)
+                    {
+                        if (Line.Contains("<AccountList />"))
+                        {
+                            TextFile.Close();
+
+                            //MessageBox.Show(("ツイッターのアカウント設定して、当アプリとの連携を許可して下さい。"), "アプリ連携",
+                            //    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                            return false;
+                        }
+                        Line = TextFile.ReadLine();
+                        Lines = Lines + Line;
+                    }
+                    TextFile.Close();
+
+                    if (Lines.Equals(""))
+                    {
+                        MessageBox.Show(("setting.xmlが壊れているか、空である為、削除しました。"
+                            + "\r\n" + "\r\n" + "【対象ファイル】：" + Setting_xml_Path), "設定ファイル削除",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        // http://dobon.net/vb/dotnet/file/filecopy.html
+
+                        //////////////////////////////////////////////////////////////
+                        // ファイルを削除する
+                        //////////////////////////////////////////////////////////////
+
+                        //"C:\test\3.txt"を削除する
+                        //指定したファイルが存在しなくても例外は発生しない
+                        //読み取り専用ファイルだと、例外UnauthorizedAccessExceptionが発生
+                        System.IO.File.Delete(@Setting_xml_Path);
+
+                        return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
 
         }
+
+        private void readAPL_PATH()
+        {
+            string myPath = GetAppPath() + "\\" + "APL_PATH.txt";
+
+            if (System.IO.File.Exists(myPath))
+            {
+                System.IO.StreamReader TextFile;
+                string Line;
+
+                TextFile = new System.IO.StreamReader(myPath, System.Text.Encoding.UTF8);
+                Line = TextFile.ReadLine();
+
+
+                //http://dobon.net/vb/dotnet/file/getabsolutepath.html
+                //相対パスも判定基準に使う
+
+                //カレントディレクトリを変更
+                System.Environment.CurrentDirectory = GetAppPath() + "\\";
+
+                while (Line != null)
+                {
+                    if (System.IO.File.Exists(GetAppPath() + "\\" + "NowplayingTunes.exe"))
+                    {
+                        NowplayingTunes_PATH = GetAppPath() + "\\" + "NowplayingTunes.exe";
+                    }
+                    else if (System.IO.File.Exists(GetAppPath() + "\\" + "なうぷれTunes.exe"))
+                    {
+                        NowplayingTunes_PATH = GetAppPath() + "\\" + "なうぷれTunes.exe";
+                    }
+                    else
+                    {
+                        if (Line.IndexOf("[NowplayingTunes_PATH]") >= 0)
+                        {
+                            NowplayingTunes_PATH = Line.Substring(Line.IndexOf("[NowplayingTunes_PATH]") + "[NowplayingTunes_PATH]".Length);
+                        }
+                    }
+
+                    if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
+                    {
+                        iTunes_PATH = "C:\\Program Files (x86)\\iTunes\\iTunes.exe";
+                    }
+                    else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
+                    {
+                        iTunes_PATH = "C:\\Program Files\\iTunes\\iTunes.exe";
+                    }
+                    else
+                    {
+                        if (Line.IndexOf("[iTunes_PATH]") >= 0)
+                        {
+                            iTunes_PATH = Line.Substring(Line.IndexOf("[iTunes_PATH]") + "[iTunes_PATH]".Length);
+                            ShortcutToPath_Func(iTunes_PATH);
+                        }
+                    }
+
+                    Line = TextFile.ReadLine();
+                }
+                TextFile.Close();
+            }
+        }
+
+        private void writeAPL_PATH()
+        {
+            if (FileDroppedFLG == false) return;
+
+            string myPath = GetAppPath() + "\\" + "APL_PATH.txt";
+
+            String PrevSettingFilePath = PrevNowplayingTunes_PATH.Substring(0, PrevNowplayingTunes_PATH.LastIndexOf("\\") + 1) + "setting.xml";
+            String CurSettingFilePath = NowplayingTunes_PATH.Substring(0, NowplayingTunes_PATH.LastIndexOf("\\") + 1) + "setting.xml";
+
+            String BackUpSettingFilePath = GetAppPath() + "\\" + "setting.xml";
+
+            System.IO.StreamWriter WS;
+
+            WS = new System.IO.StreamWriter(new System.IO.FileStream(myPath, System.IO.FileMode.Create), System.Text.Encoding.UTF8);
+            //Create；ファイルを新規作成。すでに存在する場合は上書き
+
+            //MessageBox.Show((" PrevSettingFilePath：" + PrevSettingFilePath + "\r\nCurSettingFilePath：" + CurSettingFilePath + "\r\nBackUpSettingFilePath：" + BackUpSettingFilePath), "デバッグ用メッセージボックス");
+
+
+            //ShortcutToPath_Func(iTunes_PATH);
+            //ShortcutToPath_Func(NowplayingTunes_PATH);
+
+            if ( PrevNowplayingTunes_PATH != NowplayingTunes_PATH ) {
+
+                if (PrevSettingFilePath == "" || PrevSettingFilePath == "setting.xml")
+                {
+                    if (System.IO.File.Exists(CurSettingFilePath))
+                    {
+                        if (CheckSetting_xml(CurSettingFilePath))
+                        {
+                            MessageBox.Show(("当アプリに初めて、なうぷれTunesがドラッグ＆ドロップされました。setting.xmlを退避します。"
+                                + "\r\n" + "\r\n" + "【コピー元】：" + CurSettingFilePath), "設定ファイルコピー",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                            //System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+
+                            if (System.IO.File.Exists(CurSettingFilePath))
+                            {
+                                System.IO.File.Copy(@CurSettingFilePath, @BackUpSettingFilePath, true);
+                            }
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+                }
+                else
+                {
+                    if (System.IO.File.Exists(PrevSettingFilePath) && CheckSetting_xml(PrevSettingFilePath))
+                    {
+                        if (System.IO.File.Exists(CurSettingFilePath) && CheckSetting_xml(CurSettingFilePath))
+                        {
+                            if (MessageBox.Show(("【コピー元】：" + PrevSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
+                                    + "\r\n" + "\r\n" + "既にsetting.xmlが存在します。上書きしますか？"), "設定ファイル上書き確認",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                            {
+                                //////////////////////////////////////////////////////////////
+                                // ファイルをコピーする
+                                //////////////////////////////////////////////////////////////
+
+                                //"C:\test\1.txt"を"C:\test\2.txt"にコピーする
+                                //コピーするファイルが存在しない時は、FileNotFoundExceptionが発生
+                                //コピー先のフォルダが存在しない時は、DirectoryNotFoundExceptionが発生
+                                //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
+                                //コピー先のファイルへのアクセスが拒否された時などで、
+                                //  UnauthorizedAccessExceptionが発生
+                                System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+
+                                if (System.IO.File.Exists(PrevSettingFilePath) && CheckSetting_xml(PrevSettingFilePath))
+                                {
+                                    System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (MessageBox.Show(("新しいバージョンの なうぷれTunes 配下に 設定ファイルを旧フォルダからコピーしますか？"
+                                + "\r\n" + "\r\n" + "【コピー元】：" + PrevSettingFilePath), "設定ファイルコピー",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                            {
+                                if (System.IO.File.Exists(PrevSettingFilePath) && CheckSetting_xml(PrevSettingFilePath))
+                                {
+                                    System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+                                    System.IO.File.Copy(@PrevSettingFilePath, @BackUpSettingFilePath, true);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (MessageBox.Show(("新しいバージョンの なうぷれTunes 配下に 設定ファイルをコピーしますか？"
+                            + "\r\n" + "\r\n" + "【コピー元】：" + BackUpSettingFilePath), "設定ファイルコピー",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            if (System.IO.File.Exists(BackUpSettingFilePath) && CheckSetting_xml(BackUpSettingFilePath))
+                            {
+                                System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
+                            }
+                        }
+                    }
+                }
+
+            }
+            else if ( PrevNowplayingTunes_PATH == NowplayingTunes_PATH)
+            {
+                if (System.IO.File.Exists(BackUpSettingFilePath) && CheckSetting_xml(BackUpSettingFilePath))
+                {
+                    if (System.IO.File.Exists(CurSettingFilePath) == false)
+                    {
+                        if (MessageBox.Show(("【コピー元】：" + BackUpSettingFilePath + "\r\n" + "\r\n" + "setting.xml を復元しますか？"), "設定ファイル復元",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            //////////////////////////////////////////////////////////////
+                            // ファイルをコピーする
+                            //////////////////////////////////////////////////////////////
+
+                            //"C:\test\1.txt"を"C:\test\2.txt"にコピーする
+                            //コピーするファイルが存在しない時は、FileNotFoundExceptionが発生
+                            //コピー先のフォルダが存在しない時は、DirectoryNotFoundExceptionが発生
+                            //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
+                            //コピー先のファイルへのアクセスが拒否された時などで、
+                            //  UnauthorizedAccessExceptionが発生
+                            System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
+                        }
+                    }
+                    else if (System.IO.File.Exists(CurSettingFilePath))
+                    {
+                        if (MessageBox.Show(("【コピー元】：" + BackUpSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
+                                + "\r\n" + "\r\n" + "setting.xml を復元しますか？"), "設定ファイル復元",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            //////////////////////////////////////////////////////////////
+                            // ファイルをコピーする
+                            //////////////////////////////////////////////////////////////
+
+                            //"C:\test\1.txt"を"C:\test\2.txt"にコピーする
+                            //コピーするファイルが存在しない時は、FileNotFoundExceptionが発生
+                            //コピー先のフォルダが存在しない時は、DirectoryNotFoundExceptionが発生
+                            //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
+                            //コピー先のファイルへのアクセスが拒否された時などで、
+                            //  UnauthorizedAccessExceptionが発生
+                            if (System.IO.File.Exists(BackUpSettingFilePath) && CheckSetting_xml(BackUpSettingFilePath))
+                            {
+                                System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+            // C#
+            System.Diagnostics.Process[] proc;
+
+            proc = System.Diagnostics.Process.GetProcessesByName("NowplayingTunes");
+
+
+            //配列から1つずつ取り出す
+            foreach (System.Diagnostics.Process p in proc)
+            {
+
+                try
+                {
+                    //p.Kill();
+                    //IDとメインウィンドウのキャプションを出力する
+                    Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
+
+                    // Test to see if the process is responding.
+                    if (p.Responding)
+                    {
+                        //p.Kill();
+                    }
+                    else
+                    {
+                        if (p.HasExited)
+                        {//終了 
+                            //MessageBox.Show("起動されていません");
+                        }
+                        else if (p.Responding == false)
+                        {
+                            //MessageBox.Show("応答なし");
+                            //起動されているならKILL 
+                            //p.Kill();
+                        }
+                        //}
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("エラー : " + ex.Message);
+                }
+            }
+
+            proc = System.Diagnostics.Process.GetProcessesByName("なうぷれTunes");
+
+
+            //配列から1つずつ取り出す
+            foreach (System.Diagnostics.Process p in proc)
+            {
+
+                try
+                {
+                   //p.Kill();
+                    //IDとメインウィンドウのキャプションを出力する
+                    Console.WriteLine("{0}/{1}", p.Id, p.MainWindowTitle);
+
+                    // Test to see if the process is responding.
+                    if (p.Responding)
+                    {
+                        p.Kill();
+                    }
+                    else
+                    {
+                        if (p.HasExited)
+                        {//終了 
+                            //MessageBox.Show("起動されていません");
+                        }
+                        else if (p.Responding == false)
+                        {
+                            //MessageBox.Show("応答なし");
+                            //起動されているならKILL 
+                            //p.Kill();
+                        }
+                        //}
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("エラー : " + ex.Message);
+                }
+            }
+
+
+            if (APL_RUN == false)
+            {
+                System.Diagnostics.Process.Start(NowplayingTunes_PATH);
+                APL_RUN = true;
+            }
+
+
+            PrevNowplayingTunes_PATH = NowplayingTunes_PATH;
+
+            string buff = "";
+
+            if (iTunes_PATH != "")
+            {
+                buff = "[iTunes_PATH]" + iTunes_PATH;
+
+                WS.Write(buff);          //出力データ
+                WS.WriteLine();            //行終端文
+            }
+
+            if (NowplayingTunes_PATH != "")
+            {
+                buff = "[NowplayingTunes_PATH]" + NowplayingTunes_PATH;
+
+                WS.Write(buff);          //出力データ
+                WS.WriteLine();            //行終端文
+            }
+
+            WS.Close();
+        }
+
+        private void frmNowplayingEditor_DragDrop()
+        {
+            //http://knman.sakura.ne.jp/wordpress/?p=525
+            //AllowDrop = trueでドロップを許可
+            this.AllowDrop = true;
+
+            //DragEnterイベントハンドラの追加。DebugBoxの上にドラッグしたままのカーソルが来た時に発生。
+            this.DragEnter += (sender, e) =>
+            {
+                //ドラッグされたものが「ファイル」のときのみ
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    //ファイルをコピーする
+                    e.Effect = DragDropEffects.Copy;
+                }
+            };
+
+            //DragDropイベントハンドラの追加。DebugBox上にドラッグしたものをドロップしたとき(マウスボタンを離した時)に発生
+            this.DragDrop += (sender, e) =>
+            {
+                //ドロップされたファイルからパスを含むファイル名を取得する
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                string name = string.Empty;
+
+                //パスを含んだファイル名からファイル名だけを取り出す。
+                foreach (string file in files)
+                {
+                    name += System.IO.Path.GetFileName(file) + Environment.NewLine;
+                }
+                //テキストボックスに表示する
+                //this.DebugBox.Text = name;
+
+                if (files.Length >= 1)
+                {
+                    for (int myIDX = 0; myIDX < files.Length; myIDX++)
+                    {
+
+                        ShortcutToPath_Func(files[myIDX]);
+                    }
+                }
+
+                if (files.Length >= 1)
+                {
+                    FileDroppedFLG = true;
+                }
+
+                writeAPL_PATH();
+                FileDroppedFLG = false;
+            };
+        }
+
 
         //Buttonのクリックイベントハンドラ
         private void replaceButtons_Click(object sender, EventArgs e)
@@ -513,6 +1131,7 @@ namespace TYPE_C_NowplayingEditor
                 }
 
                 writeEditData();
+                //writeAPL_PATH();
             }
 
             //Application.Exit()
@@ -532,16 +1151,16 @@ namespace TYPE_C_NowplayingEditor
                 LastSelectionLength = 0; //UNDO・REDO後 初期化
 
                 this.EditBOX.Focus();
-                this.EditBOX.Select( LastSelectionStart, LastSelectionLength ); //現在入力中の位置にカーソルを移動
+                this.EditBOX.Select(LastSelectionStart, LastSelectionLength); //現在入力中の位置にカーソルを移動
                 this.EditBOX.ScrollToCaret(); //現在入力中の位置にスクロール
             }
         }
 
         private void ButtonListItemClear_Click(object sender, EventArgs e)
         {
-            if (this.ComboBoxEditStr.Items.Count >= 1)
-            {
-                if (MessageBox.Show("履歴をすべて削除しますか？", "確認", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            //if (this.ComboBoxEditStr.Items.Count >= 1)
+            //{
+                if (MessageBox.Show("当フォームの履歴など設定ファイルを初期化しますか？", "確認", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
                     this.ComboBoxEditStr.Items.Clear();
 
@@ -552,15 +1171,31 @@ namespace TYPE_C_NowplayingEditor
                     WS = new System.IO.StreamWriter(
                           new System.IO.FileStream(myPath, System.IO.FileMode.Create), System.Text.Encoding.UTF8); //Create；ファイルを新規作成。すでに存在する場合は上書き
 
-                    WS.Write("");             //出力データ
+
+                    string PreSetData =
+                    "$ARTIST - $TITLE #NowPlaying #なうぷれ" + "\r\n" +
+                    "$TITLE / $ARTIST #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪「$TITLE」 (ALBUM:$ALBUMNAME) #NowPlaying #なうぷれ" + "\r\n" +
+                     "$ARTIST - ♪$TITLE (「$ALBUMNAME」より) #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪「$TITLE」 ($ALBUMNAME) #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪「$TITLE」 #NowPlaying #なうぷれ" + "\r\n" +
+                    "$ARTIST - ♪$TITLE ($YEAR年 リリース「$ALBUMNAME」より) #NowPlaying #なうぷれ";
+
+
+                    WS.Write(PreSetData);             //出力データ
                     WS.WriteLine();           //行終端文
                     WS.Close();
+
+                    readEditData();
+
+                    System.IO.File.Delete(@GetAppPath() + "\\" + "APL_PATH.txt");
+                    System.IO.File.Delete(@GetAppPath() + "\\" + "setting.xml");
                 }
-            }
-            else
-            {
-                Console.Beep();  //  http://dobon.net/vb/dotnet/vb2cs/vbbeep.html
-            }
+            //}
+            //else
+            //{
+            //    Console.Beep();  //  http://dobon.net/vb/dotnet/vb2cs/vbbeep.html
+            //}
         }
 
         private void ComboBoxEditStr_SelectedIndexChanged(object sender, EventArgs e)
@@ -600,29 +1235,31 @@ namespace TYPE_C_NowplayingEditor
                     ////////////InsertStrIntoTextBox_EditBOX("$");
                     ////////////InsertStrIntoTextBox_Func("$", ■TextBoxTweetText);
 
-                    ////////////TextBoxKeepStr = this.EditBOX.Text;
+                    TextBoxKeepStr = this.EditBOX.Text;
 
-                    ////////////InsertStrIntoTextBox_Func("$", this.EditBOX);
+                    InsertStrIntoTextBox_Func("$", this.EditBOX);
 
-                    ////////////string ReplaceTextListData =
+                    string ReplaceTextListData =
 
-                    ////////////"$TITLE - 曲名" + "\r\n" +
-                    ////////////"$ARTIST - アーティスト名" + "\r\n" +
-                    ////////////"$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
-                    ////////////"$ALBUMNAME - アルバム名" + "\r\n" +
-                    ////////////"$COMMENT - コメント" + "\r\n" +
-                    ////////////"$COMPOSER - 作曲家" + "\r\n" +
-                    ////////////"$DISCCOUNT - ディスク枚数" + "\r\n" +
-                    ////////////"$DISCNUMBER - ディスクナンバー" + "\r\n" +
-                    ////////////"$GENRE - ジャンル" + "\r\n" +
-                    ////////////"$LASTPLAYED - 最後に再生した日付" + "\r\n" +
-                    ////////////"$PLAYEDTIMES - 再生回数" + "\r\n" +
-                    ////////////"$RATING - 評価" + "\r\n" +
-                    ////////////"$TRACKNUMBER - トラックナンバー" + "\r\n" +
-                    ////////////"$YEAR - リリース年" + "\r\n" +
-                    ////////////"$NEWLINE - 改行" + "\r\n";
+                    "$TITLE - 曲名" + "\r\n" +
+                    "$ARTIST - アーティスト名" + "\r\n" +
+                    "$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
+                    "$ALBUMNAME - アルバム名" + "\r\n" +
+                    "$COMMENT - コメント" + "\r\n" +
+                    "$COMPOSER - 作曲家" + "\r\n" +
+                    "$DISCCOUNT - ディスク枚数" + "\r\n" +
+                    "$DISCNUMBER - ディスクナンバー" + "\r\n" +
+                    "$GENRE - ジャンル" + "\r\n" +
+                    "$LASTPLAYED - 最後に再生した日付" + "\r\n" +
+                    "$PLAYEDTIMES - 再生回数" + "\r\n" +
+                    "$RATING - 評価" + "\r\n" +
+                    "$TRACKNUMBER - トラックナンバー" + "\r\n" +
+                    "$YEAR - リリース年" + "\r\n" +
+                    "$NEWLINE - 改行" + "\r\n" +
+                    "$GROUP - グループ名" + "\r\n" +
+                    "$RATESTAR - ★★★★★" + "\r\n";
 
-                    ////////////ContextMenu_Func(ReplaceTextListData);
+                    ContextMenu_Func(ReplaceTextListData);
                 }
             }
 
@@ -756,27 +1393,15 @@ namespace TYPE_C_NowplayingEditor
                 //                    "警告",
                 //                    MessageBoxButtons.OK);
 
-                string myPath = GetAppPath() + "\\" + "なうぷれTunes.exe";
-                if (System.IO.File.Exists(myPath))
+                if (NowplayingTunes_PATH != "")
                 {
-                    System.Diagnostics.Process.Start(myPath);
-
-                    //メッセージキューに現在あるWindowsメッセージをすべて処理する
-                    //System.Windows.Forms.Application.DoEvents();
-
-                    System.Threading.Thread.Sleep(1500);
-
-                    //Get a handle for the Calculator Application main window           
-                    hwnd = FindWindow(null, "なうぷれTunes");
-
-                }
-                else
-                {
-                    myPath = GetAppPath() + "\\" + "NowplayingTunes.exe";
-                    if (System.IO.File.Exists(myPath))
+                    if (System.IO.File.Exists(NowplayingTunes_PATH))
                     {
-                        System.Diagnostics.Process.Start(myPath);
-
+                        if (APL_RUN == false)
+                        {
+                            System.Diagnostics.Process.Start(NowplayingTunes_PATH);
+                            APL_RUN = true;
+                        }
                         //メッセージキューに現在あるWindowsメッセージをすべて処理する
                         //System.Windows.Forms.Application.DoEvents();
 
@@ -784,27 +1409,34 @@ namespace TYPE_C_NowplayingEditor
 
                         //Get a handle for the Calculator Application main window           
                         hwnd = FindWindow(null, "なうぷれTunes");
-                    }
-                    else
-                    {
-                        if (myMode.Equals("SET"))
-                        {
-                            MessageBox.Show("クリップボードに ツイート設定 をコピーしました。" + "\r\n" 
-                                + "「なうぷれTunes」を起動してペーストして下さい。" + "\r\n" + "\r\n"
-                                + "\r\n"
-                                + "※なうぷれTunes が起動中であれば、アプリ名から" + "\r\n"
-                                + "　ウィンドウを特定し、当アプリで編集したデータ" + "\r\n"
-                                + "　を自動でセットします。" + "\r\n"
-                                + "\r\n"
-                                + "　また当エディターアプリをなうぷれTunesと同じ" + "\r\n" 
-                                + "　フォルダにいれると、当アプリ起動時になうぷれ" + "\r\n"
-                                + "　Tunesを起動できるランチャー機能があります。",
-                                                "通知",
-                                                MessageBoxButtons.OK);
-                        }
 
-                        return "";
                     }
+                }
+                else
+                {
+                    if (myMode.Equals("SET"))
+                    {
+                        MessageBox.Show("クリップボードに ツイート設定 をコピーしました。" + "\r\n" 
+                            + "「なうぷれTunes」を起動してペーストして下さい。" + "\r\n" + "\r\n"
+                            + "\r\n"
+                            + "※なうぷれTunes が起動中であれば、アプリ名から" + "\r\n"
+                            + "　ウィンドウを特定し、当アプリで編集したデータ" + "\r\n"
+                            + "　を自動でセットします。" + "\r\n"
+                            + "\r\n"
+                            + "　また当エディターアプリをなうぷれTunesと同じ" + "\r\n"
+                            + "　フォルダにいれるか、なうぷれTunesを当アプリ" + "\r\n"
+                            + "　にドラッグ＆ドロップすると当アプリ起動時に" + "\r\n"
+                            + "　「なうぷれTunes」→「iTunes」の順で、起動" + "\r\n"
+                            + "　できるランチャー機能があります。"+ "\r\n"
+                            + "\r\n"
+                            + "　「iTunes」をデフォルトとは別の場所にインスト" + "\r\n"
+                            + "　ールした場合は、初回時のみ当アプリにドラッグ" + "\r\n"
+                            + "　＆ドロップして下さい。",
+                                            "通知",
+                                            MessageBoxButtons.OK);
+                    }
+
+                    return "";
                 }
 
             }
@@ -818,6 +1450,21 @@ namespace TYPE_C_NowplayingEditor
                 if (System.IO.File.Exists("C:\\Program Files (x86)\\iTunes\\iTunes.exe"))
                 {
                     System.Diagnostics.Process.Start("C:\\Program Files (x86)\\iTunes\\iTunes.exe"); //iTunesを起動
+                }
+                else if (System.IO.File.Exists("C:\\Program Files\\iTunes\\iTunes.exe"))
+                {
+                    System.Diagnostics.Process.Start("C:\\Program Files\\iTunes\\iTunes.exe");
+                }
+                else
+                {
+                    if (iTunes_PATH != "")
+                    {
+                        if (System.IO.File.Exists(iTunes_PATH))
+                        {
+                            System.Diagnostics.Process.Start(iTunes_PATH); //iTunesを起動
+                        }
+                    }
+
                 }
             }
 
@@ -880,40 +1527,40 @@ namespace TYPE_C_NowplayingEditor
 
         }
 
-        private void ■TextBoxTweetText_MouseMove(object sender, MouseEventArgs e)
-        {
-            LastSelectionStart = ■TextBoxTweetText.SelectionStart;
-            LastSelectionLength = ■TextBoxTweetText.SelectionLength;
-        }
+        //////////////private void ■TextBoxTweetText_MouseMove(object sender, MouseEventArgs e)
+        //////////////{
+        //////////////    LastSelectionStart = ■TextBoxTweetText.SelectionStart;
+        //////////////    LastSelectionLength = ■TextBoxTweetText.SelectionLength;
+        //////////////}
 
-        private void ■TextBoxTweetText_KeyDown(object sender, KeyEventArgs e)
-        {
+        //////////////private void ■TextBoxTweetText_KeyDown(object sender, KeyEventArgs e)
+        //////////////{
 
-            LastSelectionStart = ■TextBoxTweetText.SelectionStart;
-            LastSelectionLength = ■TextBoxTweetText.SelectionLength;
+        //////////////    LastSelectionStart = ■TextBoxTweetText.SelectionStart;
+        //////////////    LastSelectionLength = ■TextBoxTweetText.SelectionLength;
 
-            //どの修飾子キー(Shift、Ctrl、およびAlt)が押されているか
-            if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-            {
-                //Console.WriteLine("Shiftキーが押されています。");
+        //////////////    //どの修飾子キー(Shift、Ctrl、およびAlt)が押されているか
+        //////////////    if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+        //////////////    {
+        //////////////        //Console.WriteLine("Shiftキーが押されています。");
 
-                if (e.KeyCode.Equals(Keys.D4))  //キーボードの＄は Shift + 4 , 数字の４は D4
-                {
-                    //Console.WriteLine(" $ が押されました");
+        //////////////        if (e.KeyCode.Equals(Keys.D4))  //キーボードの＄は Shift + 4 , 数字の４は D4
+        //////////////        {
+        //////////////            //Console.WriteLine(" $ が押されました");
 
-                    // TextBoxKeepStr = TextBoxTweetText.Text; //UNDO用に退避
+        //////////////            // TextBoxKeepStr = TextBoxTweetText.Text; //UNDO用に退避
+        
+        //////////////            //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
+        //////////////            InsertStrIntoTextBox_Func("$",■TextBoxTweetText); //ユーザー関数
 
-                    //「$」を押した瞬間、メニューが表示されて、「$」の入力がキャンセルされてしまうので挿入
-                    InsertStrIntoTextBox_Func("$",■TextBoxTweetText); //ユーザー関数
-
-                    UI.ReplaceTextList dialog = new UI.ReplaceTextList();
-                    ContextMenu_Func(dialog.Text);
-                }
-            }
-        }
+        //////////////            UI.ReplaceTextList dialog = new UI.ReplaceTextList();
+        //////////////            ContextMenu_Func(dialog.Text);
+        //////////////        }
+        //////////////    }
+        //////////////}
 
 
-        ■private void InsertStrIntoTextBox_Func(string ReplaceText, TextBox objTextBox)
+        private void InsertStrIntoTextBox_Func(string ReplaceText, TextBox objTextBox)
         {
             objTextBox.Focus();
 
@@ -934,7 +1581,7 @@ namespace TYPE_C_NowplayingEditor
             objTextBox.ScrollToCaret(); //現在入力中の位置にスクロール
         }
 
-        ■public void ContextMenu_Func(String ReplaceTextListData)  //「＄」が押されたときに出すメニューを生成
+        public void ContextMenu_Func(String ReplaceTextListData)  //「＄」が押されたときに出すメニューを生成
         {
 
             ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
@@ -963,8 +1610,9 @@ namespace TYPE_C_NowplayingEditor
                         //挿入した「$」をスキップして、２文字目から「 - 」までの文字を挿入
                         ReplaceText = ReplaceText.Substring( 1, ReplaceText.IndexOf(" - ", 0) - 1 );
 
-                        InsertStrIntoTextBox_Func(ReplaceText, ■TextBoxTweetText); //ユーザー関数
+                        ////////////InsertStrIntoTextBox_Func(ReplaceText, ■TextBoxTweetText); //ユーザー関数
 
+                        InsertStrIntoTextBox_Func(ReplaceText, this.EditBOX); //ユーザー関数
                         ////////////InsertStrIntoTextBox_EditBOX(ReplaceText); //ユーザー関数
                     };
                     cntmenu.Items.Add(newcontitem);
@@ -989,33 +1637,32 @@ namespace TYPE_C_NowplayingEditor
             //cntmenu.Show(cp);
 
 
-            ////▼＄が押された右下にメニューを表示▼
-            Point text_p = Point.Empty;
-            GetCaretPos(out text_p);
-
-            //ContextMenuを表示しているコントロールの「スクリーン」座標に変換
-            text_p = ■TextBoxTweetText.PointToScreen(text_p);
-            text_p.Y += 20;
-
-            cntmenu.Show(text_p);
-
-
-
             ////////////////▼＄が押された右下にメニューを表示▼
             ////////////Point text_p = Point.Empty;
             ////////////GetCaretPos(out text_p);
 
             //////////////ContextMenuを表示しているコントロールの「スクリーン」座標に変換
-            ////////////text_p = this.EditBOX.PointToScreen(text_p);
+            ////////////text_p = ■TextBoxTweetText.PointToScreen(text_p);
             ////////////text_p.Y += 20;
 
             ////////////cntmenu.Show(text_p);
+
+
+
+            ////▼＄が押された右下にメニューを表示▼
+            Point text_p = Point.Empty;
+            GetCaretPos(out text_p);
+
+            //ContextMenuを表示しているコントロールの「スクリーン」座標に変換
+            text_p = this.EditBOX.PointToScreen(text_p);
+            text_p.Y += 20;
+
+            cntmenu.Show(text_p);
         }
 
-        ■public ContextMenuStrip ContextMenu_RCLK_Func(TextBox objTextBox)  //右クリックしたときに出すメニューを生成
-                                                                                //form_loadでコール
+        public ContextMenuStrip ContextMenu_RCLK_Func(TextBox objTextBox)  //右クリックしたときに出すメニューを生成 　//form_loadでコール
         {
-
+            
             ////右クリックメニュー に、既存の「コピー」「切り取り」「貼り付け」「元に戻す」「削除」に自作メニューを追加
             //http://d.hatena.ne.jp/kabacsharp/20131006/1381046053
 
@@ -1072,6 +1719,7 @@ namespace TYPE_C_NowplayingEditor
             };
             cntmenu.Items.Add(mPaste);
 
+
             //Delete
             ToolStripMenuItem mDelete = new ToolStripMenuItem();
             mDelete.Text = "選択文字列の削除";
@@ -1085,28 +1733,30 @@ namespace TYPE_C_NowplayingEditor
             ToolStripSeparator itemSeparator = new ToolStripSeparator();    //セパレータの作成
             cntmenu.Items.Add(itemSeparator);
 
-            ////////////string ReplaceTextListData =
+            string ReplaceTextListData =
 
-            ////////////        "$TITLE - 曲名" + "\r\n" +
-            ////////////        "$ARTIST - アーティスト名" + "\r\n" +
-            ////////////        "$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
-            ////////////        "$ALBUMNAME - アルバム名" + "\r\n" +
-            ////////////        "$COMMENT - コメント" + "\r\n" +
-            ////////////        "$COMPOSER - 作曲家" + "\r\n" +
-            ////////////        "$DISCCOUNT - ディスク枚数" + "\r\n" +
-            ////////////        "$DISCNUMBER - ディスクナンバー" + "\r\n" +
-            ////////////        "$GENRE - ジャンル" + "\r\n" +
-            ////////////        "$LASTPLAYED - 最後に再生した日付" + "\r\n" +
-            ////////////        "$PLAYEDTIMES - 再生回数" + "\r\n" +
-            ////////////        "$RATING - 評価" + "\r\n" +
-            ////////////        "$TRACKNUMBER - トラックナンバー" + "\r\n" +
-            ////////////        "$YEAR - リリース年" + "\r\n" +
-            ////////////        "$NEWLINE - 改行" + "\r\n";
+                    "$TITLE - 曲名" + "\r\n" +
+                    "$ARTIST - アーティスト名" + "\r\n" +
+                    "$ALBUMARTIST - アルバムアーティスト" + "\r\n" +
+                    "$ALBUMNAME - アルバム名" + "\r\n" +
+                    "$COMMENT - コメント" + "\r\n" +
+                    "$COMPOSER - 作曲家" + "\r\n" +
+                    "$DISCCOUNT - ディスク枚数" + "\r\n" +
+                    "$DISCNUMBER - ディスクナンバー" + "\r\n" +
+                    "$GENRE - ジャンル" + "\r\n" +
+                    "$LASTPLAYED - 最後に再生した日付" + "\r\n" +
+                    "$PLAYEDTIMES - 再生回数" + "\r\n" +
+                    "$RATING - 評価" + "\r\n" +
+                    "$TRACKNUMBER - トラックナンバー" + "\r\n" +
+                    "$YEAR - リリース年" + "\r\n" +
+                    "$NEWLINE - 改行" + "\r\n" +
+                    "$GROUP - グループ名" + "\r\n" +
+                    "$RATESTAR - ★★★★★" + "\r\n";
 
-            string ReplaceTextListData = "";
+            ////////////string ReplaceTextListData = "";
 
-            UI.ReplaceTextList dialog = new UI.ReplaceTextList();
-            ReplaceTextListData = dialog.Text;
+            ////////////UI.ReplaceTextList dialog = new UI.ReplaceTextList();
+            ////////////ReplaceTextListData = dialog.Text;
 
             
             ReplaceTextListData = ReplaceTextListData.Replace("\r\n", "\n");
@@ -1128,17 +1778,18 @@ namespace TYPE_C_NowplayingEditor
                     newcontitem.Text = s1[myIDX];
                     newcontitem.Click += delegate
                     {
-
-                        // TextBoxKeepStr = TextBoxTweetText.Text; //UNDO用に退避
-
                         String ReplaceText = newcontitem.Text;
 
                         //【×】挿入した「$」をスキップして、２文字目から「 - 」までの文字を挿入
                         //【○】右クリックでは「$」は挿入されないので、スキップしない
                         ReplaceText = ReplaceText.Substring(0, ReplaceText.IndexOf(" - ", 0));
 
-                        InsertStrIntoTextBox_Func(ReplaceText, ■TextBoxTweetText);  //ユーザー関数
+                        ////////////InsertStrIntoTextBox_Func(ReplaceText, ■TextBoxTweetText);  //ユーザー関数
 
+                        TextBoxKeepStr = this.EditBOX.Text;
+
+
+                        InsertStrIntoTextBox_Func(ReplaceText, this.EditBOX);  //ユーザー関数
                         ////////////InsertStrIntoTextBox_EditBOX(ReplaceText);  //ユーザー関数
                     };
                     cntmenu.Items.Add(newcontitem);
@@ -1191,8 +1842,8 @@ namespace TYPE_C_NowplayingEditor
          private const int SW_RESTORE = 9;  // 画面を元の大きさに戻す
 
 
-         ■[DllImport("user32.dll")]
-         ■private extern static int GetCaretPos(out Point p);
+         [DllImport("user32.dll")]
+         private extern static int GetCaretPos(out Point p);
          //[DllImport("user32.dll")]
          //private extern static int SetCaretPos(int x, int y);
          //[DllImport("user32.dll")]
