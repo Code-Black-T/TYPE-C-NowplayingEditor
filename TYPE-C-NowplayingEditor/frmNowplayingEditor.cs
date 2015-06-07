@@ -309,9 +309,11 @@ namespace TYPE_C_NowplayingEditor
                 {
                     System.IO.StreamReader TextFile;
                     string Line;
+                    string Lines = "";
 
                     TextFile = new System.IO.StreamReader(myPath, System.Text.Encoding.UTF8);
                     Line = TextFile.ReadLine();
+                    Lines = Lines + Line;
 
                     //カレントディレクトリを変更
                     System.Environment.CurrentDirectory = GetAppPath() + "\\";
@@ -321,11 +323,36 @@ namespace TYPE_C_NowplayingEditor
                         if (Line.Contains("<AccountList />"))
                         {
                             TextFile.Close();
+
+                            //MessageBox.Show(("ツイッターのアカウント設定して、当アプリとの連携を許可して下さい。"), "アプリ連携",
+                            //    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                             return false;
                         }
                         Line = TextFile.ReadLine();
+                        Lines = Lines + Line;
                     }
                     TextFile.Close();
+
+                    if (Lines.Equals(""))
+                    {
+                        MessageBox.Show(("setting.xmlが壊れているか、空である為、削除しました。"
+                            + "\r\n" + "\r\n" + "【対象ファイル】：" + Setting_xml_Path), "設定ファイル削除",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        // http://dobon.net/vb/dotnet/file/filecopy.html
+
+                        //////////////////////////////////////////////////////////////
+                        // ファイルを削除する
+                        //////////////////////////////////////////////////////////////
+
+                        //"C:\test\3.txt"を削除する
+                        //指定したファイルが存在しなくても例外は発生しない
+                        //読み取り専用ファイルだと、例外UnauthorizedAccessExceptionが発生
+                        System.IO.File.Delete(@Setting_xml_Path);
+
+                        return false;
+                    }
                     return true;
                 }
                 else
@@ -416,8 +443,6 @@ namespace TYPE_C_NowplayingEditor
             WS = new System.IO.StreamWriter(new System.IO.FileStream(myPath, System.IO.FileMode.Create), System.Text.Encoding.UTF8);
             //Create；ファイルを新規作成。すでに存在する場合は上書き
 
-
-
             //MessageBox.Show((" PrevSettingFilePath：" + PrevSettingFilePath + "\r\nCurSettingFilePath：" + CurSettingFilePath + "\r\nBackUpSettingFilePath：" + BackUpSettingFilePath), "デバッグ用メッセージボックス");
 
 
@@ -428,16 +453,23 @@ namespace TYPE_C_NowplayingEditor
 
                 if (PrevSettingFilePath == "" || PrevSettingFilePath == "setting.xml")
                 {
-                    if (System.IO.File.Exists(CurSettingFilePath) && CheckSetting_xml(CurSettingFilePath))
+                    if (System.IO.File.Exists(CurSettingFilePath))
                     {
-                        MessageBox.Show(("当アプリに初めて、なうぷれTunesがドラッグ＆ドロップされました。setting.xmlを退避します。"
-                            + "\r\n" + "\r\n" + "【コピー元】：" + CurSettingFilePath), "設定ファイルコピー",
-                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                        //System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
-
-                        if (System.IO.File.Exists(CurSettingFilePath))
+                        if (CheckSetting_xml(CurSettingFilePath))
                         {
-                            System.IO.File.Copy(@CurSettingFilePath, @BackUpSettingFilePath, true);
+                            MessageBox.Show(("当アプリに初めて、なうぷれTunesがドラッグ＆ドロップされました。setting.xmlを退避します。"
+                                + "\r\n" + "\r\n" + "【コピー元】：" + CurSettingFilePath), "設定ファイルコピー",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                            //System.IO.File.Copy(@PrevSettingFilePath, @CurSettingFilePath, true);
+
+                            if (System.IO.File.Exists(CurSettingFilePath))
+                            {
+                                System.IO.File.Copy(@CurSettingFilePath, @BackUpSettingFilePath, true);
+                            }
+                        }
+                        else
+                        {
+
                         }
                     }
 
@@ -446,7 +478,7 @@ namespace TYPE_C_NowplayingEditor
                 {
                     if (System.IO.File.Exists(PrevSettingFilePath) && CheckSetting_xml(PrevSettingFilePath))
                     {
-                        if (System.IO.File.Exists(CurSettingFilePath))
+                        if (System.IO.File.Exists(CurSettingFilePath) && CheckSetting_xml(CurSettingFilePath))
                         {
                             if (MessageBox.Show(("【コピー元】：" + PrevSettingFilePath + "\r\n" + "\r\n" + "【コピー先】：" + CurSettingFilePath
                                     + "\r\n" + "\r\n" + "既にsetting.xmlが存在します。上書きしますか？"), "設定ファイル上書き確認",
@@ -537,7 +569,10 @@ namespace TYPE_C_NowplayingEditor
                             //コピー先のファイルがすでに存在している時などで、IOExceptionが発生
                             //コピー先のファイルへのアクセスが拒否された時などで、
                             //  UnauthorizedAccessExceptionが発生
-                            System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
+                            if (System.IO.File.Exists(BackUpSettingFilePath) && CheckSetting_xml(BackUpSettingFilePath))
+                            {
+                                System.IO.File.Copy(@BackUpSettingFilePath, @CurSettingFilePath, true);
+                            }
                         }
                     }
                 }
